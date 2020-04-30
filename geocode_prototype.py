@@ -10,8 +10,96 @@ in json and csv format.
 import sys
 import json
 import urllib
+import urllib.request 
 import argparse
 import csv
+
+
+def Google(add_ID, addr, API_Key):
+    '''
+    Parameters: add_ID (Address ID) , addr (Address) 
+    Step 1: Uses Google geocoder to find address co-ordinates. 
+    Step 2: Reverse geocodes to find address.
+    Step 3: Geocodes reverse geocoded address to find new co-ordinates.
+    Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
+    Returns: address_G (address from step 1), lat_G (latitude from step 1), lon_G (longitude from step 1), d_G (distance from step 4)
+    '''
+    try:
+        values = {"address": addr,
+                  "key":API_key}
+        
+        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
+        
+        req = urllib.request.Request(
+            request_string,
+            headers={
+                'User-Agent': 'Chrome'
+            }
+        )
+        r = urllib.request.urlopen(req)
+        code = r.getcode()
+        if code == 200:
+            result_G = json.loads(r.read().decode('utf-8'))
+        else:
+            print('Got incorrect code: {}'.format(code))
+            result_G = []
+        address_G = result_G['results'][0]['formatted_address']
+                
+        # reverse
+        lat_G, lon_G = result_G['results'][0]['geometry']['location']['lat'], result_G['results'][0]['geometry']['location']['lng']
+              
+        values = {"latlng": '{},{}'.format(lat_G,lon_G),
+                "key":API_key}
+        
+        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
+        req = urllib.request.Request(
+            request_string,
+            headers={
+                'User-Agent': 'Chrome'
+            }
+        )
+        r = urllib.request.urlopen(req)
+        code = r.getcode()
+        if code == 200:
+            reverse_result_G = json.loads(r.read().decode('utf-8'))
+        else:
+            print('Got incorrect code: {}'.format(code))
+            reverse_result_G = []
+        
+        local = reverse_result_G['results'][0]['formatted_address']
+        
+        values = {"address": local,
+                  "key":API_key}
+        
+        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
+        
+        req = urllib.request.Request(
+            request_string,
+            headers={
+                'User-Agent': 'Chrome'
+            }
+        )
+        r = urllib.request.urlopen(req)
+        code = r.getcode()
+        if code == 200:
+            result_rev2_G = json.loads(r.read().decode('utf-8'))
+        else:
+            print('Got incorrect code: {}'.format(code))
+            result_rev2_G = []
+       
+        # reverse
+        lat2_G, lon2_G = result_rev2_G['results'][0]['geometry']['location']['lat'], result_rev2_G['results'][0]['geometry']['location']['lng']
+       
+        # get distance between points
+        d_G = ((float(lat2_G) - float(lat_G)) ** 2 + (float(lon2_G) - float(lon_G)) ** 2) ** 0.5
+        
+    except:
+        d_G = 100000
+        address_G = None
+        lat_G = 'NaN'
+        lon_G = 'NaN'
+        
+    return address_G, lat_G, lon_G, d_G
 
 
 def ArcGIS(add_ID, addr):
@@ -23,7 +111,6 @@ def ArcGIS(add_ID, addr):
     Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
     Returns: address_AG (address from step 1), lat_AG (latitude from step 1), lon_AG (longitude from step 1), d_AG (distance from step 4)
     '''
-    
     try:
         request_string = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?'
         values = {"singleLine": addr,
@@ -338,13 +425,75 @@ def compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_
         error = 'NaN'
     return lat, lon, address_name, error
 
+def compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr):
+    try:
+        dist = [d_G, d_AG, d_N]
+        if d_G == 0.0 and "cape town" in address_G.lower():
+            print('use google')
+            lat = lat_G
+            lon = lon_G
+            address_name = address_G
+            error = d_G
+            
+        elif d_AG == 0.0 and "cape town" in address_AG.lower():
+            print('use ArcGIS')
+            lat = lat_AG
+            lon = lon_AG
+            address_name = address_AG
+            error = d_AG
+            
+        elif d_N == 0.0 and "cape town" in address_N.lower():
+            print('use Nominatim')
+            lat = lat_N
+            lon = lon_N
+            address_name = address_N
+            error = d_N
+            
+        elif d_G == min(dist) and "cape town" in address_G.lower():
+            print('use google because min dist')
+            lat = lat_G
+            lon = lon_G
+            address_name = address_G
+            error = d_G
+            
+        elif d_AG == min(dist) and "cape town" in address_AG.lower():
+            print('use ArcGIS because min dist')
+            lat = lat_AG
+            lon = lon_AG
+            address_name = address_AG
+            error = d_AG
+            
+        elif d_N == min(dist) and "cape town" in address_N.lower():
+            print('use Nominatim because min dist')
+            lat = lat_N
+            lon = lon_N
+            address_name = address_N
+            error = d_N
+            
+        else:
+            print('did not work on address ID: {}'.format(add_ID))
+            lat = 'NaN'
+            lon = 'NaN'
+            address_name = None
+            error = 'NaN'
+            
+    except:
+        print('did not work on address ID: {}'.format(add_ID))
+        lat = 'NaN'
+        lon = 'NaN'
+        address_name = None
+        error = 'NaN'
+        
+    return lat, lon, address_name, error
+
 
 if __name__ == "__main__":
-    '''
-    parser = argparse.ArgumentParser(description="geocode using ArcGIS, Nominatim, and CCT geocoder. Example: >>python .\geocode_prototype.py csv sample sample_result ")
+    
+    parser = argparse.ArgumentParser(description="geocode using ArcGIS, Nominatim, and CCT geocoder. Example: >>python .\geocode_prototype.py csv sample sample_result None")
     parser.add_argument("input_filename_type", type=str, help="input file type. Options: csv, json")
     parser.add_argument("input_filename", type=str, help="input filename eg: sample")
     parser.add_argument("output_filename", type=str, help="output filename eg: sample")
+    parser.add_argument("API_key", type=str, help="your Google API Key")
     args = parser.parse_args()
 
 
@@ -356,15 +505,11 @@ if __name__ == "__main__":
         CSV = False
     input_filename = args.input_filename
     output_filename = args.output_filename
-    '''
-    
-    # for debugging:
-    input_filename = 'sample'
-    output_filename = 'sample_result'    
-    CSV = True
-    JSON = False
-
-
+    API_key = args.API_key
+    if API_key == 'None':
+        API_key = None
+        
+    print('using Google API key: {}'.format(API_key))
 
     if JSON:
         # Opening JSON file
@@ -395,12 +540,14 @@ if __name__ == "__main__":
         address_id = [int(x) for x in address_id]
         address = address[1:]
     # %%
+    
     for i in range(len(address)):
         if "cape town" not in address[i].lower():
             address[i] = address[i] + ', Cape Town'
         if 'south africa' not in address[i].lower():
             address[i] = address[i] + ', South Africa'
     # %%
+
     inputs = zip(address_id, address)
     lats = []
     lons = []
@@ -412,11 +559,20 @@ if __name__ == "__main__":
     cct_errors = []
 
     for add_ID, addr in inputs:
-
         address_AG, lat_AG, lon_AG, d_AG = ArcGIS(add_ID, addr)
         address_N, lat_N, lon_N, d_N = Nominatim(add_ID, addr)
-        lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,
+        if API_key != None:
+            try:
+                print("API key detected")
+                address_G, lat_G, lon_G, d_G = Google(add_ID, addr, API_key)
+                lat, lon, address_name, error = compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr)
+            except:
+                print('Possible invalid API key')
+                lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,
                                                 addr)
+        else:
+            print("no API key detected")
+            lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr)
         lats.append(lat)
         lons.append(lon)
         addresses.append(address_name)
@@ -435,6 +591,7 @@ if __name__ == "__main__":
 
     # make a dictionary
     result = {}
+    
 
     for i in range(len(address_id)):
         if addresses[i] == None:
