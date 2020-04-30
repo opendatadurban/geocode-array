@@ -11,6 +11,29 @@ import urllib3
 import certifi
 import csv
 
+if len(sys.argv) > 1:  # we can accommodate anything here - they just need to tell us what they want.
+    if sys.argv[1] == '--csv':  # python .\geocode_prototype.py --csv
+        #
+        CSV = True
+        JSON = False
+    elif sys.argv[1] == '--json':
+        JSON = True
+        CSV = False
+
+    if len(sys.argv) > 2:  # python .\geocode_prototype.py --csv sample sample_result_2
+        input_filename = sys.argv[2]
+        output_filename = sys.argv[3]
+    else:
+        input_filename = 'sample'
+        output_filename = 'sample_result'
+
+else:  # currently for debugging, we can pull in final version
+    print('default CSV')
+    CSV = True
+    JSON = False
+    input_filename = 'sample_full'
+    output_filename = 'sample_result_full'
+
 
 def ArcGIS(add_ID, Add):
     # ArcGIS
@@ -257,29 +280,7 @@ def compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_
 
 if __name__ == "__main__":
 
-    if len(sys.argv) > 1:  # we can accommodate anything here - they just need to tell us what they want.
-        if sys.argv[1] == '--csv':  # python .\geocode_prototype.py --csv
-            #
-            CSV = True
-            JSON = False
-        elif sys.argv[1] == '--json':
-            JSON = True
-            CSV = False
-        if len(sys.argv) > 2:  # python .\geocode_prototype.py --csv sample sample_result_2
-            input_filename = sys.argv[2]
-            output_filename = sys.argv[3]
-        else:
-            input_filename = 'sample'
-            output_filename = 'sample_result'
-
-    else:  # currently for debugging, we can pull in final version
-        print('default CSV')
-        CSV = True
-        JSON = False
-        input_filename = 'sample_full'
-        output_filename = 'sample_result_full'
-
-    if JSON == True:
+    if JSON:
         # Opening JSON file
         loadname = input_filename + '.json'
         with open(loadname, 'r') as openfile:
@@ -290,10 +291,10 @@ if __name__ == "__main__":
         address_id = []
         address = []
         for i in range(len(data_j)):
-            address_id.append(data_j[str(i)]['Address ID'])
-            address.append(data_j[str(i)]['Address Cleaned'])
+            address_id.append(data_j[str(i)]['Address_ID'])
+            address.append(data_j[str(i)]['Address_Cleaned'])
 
-    if CSV == True:
+    if CSV:
         loadname = input_filename + '.csv'
         with open(loadname, mode='r') as csv_file:
             # csv_reader = csv.DictReader(csv_file)
@@ -373,7 +374,7 @@ if __name__ == "__main__":
         json.dump(result, outfile)
         # test
     test = False
-    if test == True:
+    if test:
         with open(savename, 'r') as openfile:
 
             # Reading from json file 
