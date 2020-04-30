@@ -354,67 +354,47 @@ def CCT(add_ID, addr):
     return cct_address, cct_loc, cct_error
 
 
-def compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_I, addr):
-    # select best option  
+def compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_I): 
     '''
     Compares outputs from ArcGIS and Nominatim and returns the most accurate result
     '''
     try:
-        if d_AG == d_N:
-            #option = "go with either"
-            if "cape town" in address_AG.lower():
-                lat = lat_AG
-                lon = lon_AG
-                error = d_AG
-                address_name = address_AG
-            elif "cape town" in address_N.lower():
-                lat = lat_N
-                lon = lon_N
-                error = d_N
-                address_name = address_N
-            else:
-                #option = 'neither one worked'
-                lat = 'NaN'
-                lon = 'NaN'
-                address_name = addr
-                error = 'NaN'
-
-        if d_AG > d_N:
-            if "cape town" in address_N.lower():
-                #option = "go with Nominatim"
-                lat = lat_N
-                lon = lon_N
-                error = d_N
-                address_name = address_N
-            elif "cape town" in address_AG.lower():
-                lat = lat_AG
-                lon = lon_AG
-                error = d_AG
-                address_name = address_AG
-            else:
-                #option = 'neither one worked'
-                lat = 'NaN'
-                lon = 'NaN'
-                address_name = addr
-                error = 'NaN'
-
-        if d_AG < d_N:
-            if "cape town" in address_AG.lower():
-                lat = lat_AG
-                lon = lon_AG
-                error = d_AG
-                address_name = address_AG
-            elif "cape town" in address_N.lower():
-                lat = lat_N
-                lon = lon_N
-                error = d_N
-                address_name = address_N
-            else:
-                #option = 'neither one worked'
-                lat = 'NaN'
-                lon = 'NaN'
-                address_name = addr
-                error = 'NaN'
+        dist = [d_AG, d_N]
+        print(dist)
+        if d_AG == 0.0 and "cape town" in address_AG.lower():
+            print('use ArcGIS: {}'.format(address_AG))
+            lat = lat_AG
+            lon = lon_AG
+            address_name = address_AG
+            error = d_AG
+            
+        elif d_N == 0.0 and "cape town" in address_N.lower():
+            print('use Nominatim: {}'.format(address_N))
+            lat = lat_N
+            lon = lon_N
+            address_name = address_N
+            error = d_N
+            
+        elif d_AG == min(dist) and "cape town" in address_AG.lower():
+            print('use ArcGIS because min dist: {}'.format(address_AG))
+            lat = lat_AG
+            lon = lon_AG
+            address_name = address_AG
+            error = d_AG
+            
+        elif d_N == min(dist) and "cape town" in address_N.lower():
+            print('use Nominatim because min dist: {}'.format(address_N))
+            lat = lat_N
+            lon = lon_N
+            address_name = address_N
+            error = d_N
+            
+        else:
+            print('did not work on address ID: {}'.format(add_ID))
+            lat = 'NaN'
+            lon = 'NaN'
+            address_name = None
+            error = 'NaN'
 
         #print("address ID: {}, address: {}, lat: {}, lon: {}, error: {}, option: {}".format(add_ID, address_name, lat, lon, error, option))
     except:
@@ -425,46 +405,51 @@ def compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_
         error = 'NaN'
     return lat, lon, address_name, error
 
-def compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr):
+def compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID):
+    '''
+    Compares outputs from Google, ArcGIS, and Nominatim and returns the most accurate result
+    '''
     try:
         dist = [d_G, d_AG, d_N]
+        print(dist)
+
         if d_G == 0.0 and "cape town" in address_G.lower():
-            print('use google')
+            print('use google: {}'.format(address_G))
             lat = lat_G
             lon = lon_G
             address_name = address_G
             error = d_G
             
         elif d_AG == 0.0 and "cape town" in address_AG.lower():
-            print('use ArcGIS')
+            print('use ArcGIS: {}'.format(address_AG))
             lat = lat_AG
             lon = lon_AG
             address_name = address_AG
             error = d_AG
             
         elif d_N == 0.0 and "cape town" in address_N.lower():
-            print('use Nominatim')
+            print('use Nominatim: {}'.format(address_N))
             lat = lat_N
             lon = lon_N
             address_name = address_N
             error = d_N
             
         elif d_G == min(dist) and "cape town" in address_G.lower():
-            print('use google because min dist')
+            print('use google because min dist: {}'.format(address_G))
             lat = lat_G
             lon = lon_G
             address_name = address_G
             error = d_G
             
         elif d_AG == min(dist) and "cape town" in address_AG.lower():
-            print('use ArcGIS because min dist')
+            print('use ArcGIS because min dist: {}'.format(address_AG))
             lat = lat_AG
             lon = lon_AG
             address_name = address_AG
             error = d_AG
             
         elif d_N == min(dist) and "cape town" in address_N.lower():
-            print('use Nominatim because min dist')
+            print('use Nominatim because min dist: {}'.format(address_N))
             lat = lat_N
             lon = lon_N
             address_name = address_N
@@ -565,14 +550,14 @@ if __name__ == "__main__":
             try:
                 print("API key detected")
                 address_G, lat_G, lon_G, d_G = Google(add_ID, addr, API_key)
-                lat, lon, address_name, error = compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr)
+                lat, lon, address_name, error = compare_all(address_G, lat_G, lon_G, d_G, address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID)
             except:
                 print('Possible invalid API key')
-                lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,
-                                                addr)
+                lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID)
+                                                
         else:
             print("no API key detected")
-            lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID,addr)
+            lat, lon, address_name, error = compare(address_AG, lat_AG, lon_AG, d_AG, address_N, lat_N, lon_N, d_N, add_ID)
         lats.append(lat)
         lons.append(lon)
         addresses.append(address_name)
@@ -587,7 +572,7 @@ if __name__ == "__main__":
             cct_lats.append('NaN')
             cct_lons.append('NaN')
         cct_errors.append(cct_error)
-        print('address: {}, location: {}'.format(cct_address, cct_loc))
+        #print('address: {}, location: {}'.format(cct_address, cct_loc))
 
     # make a dictionary
     result = {}
@@ -610,7 +595,7 @@ if __name__ == "__main__":
                                                              'error': float(cct_errors[i])}
                                             }}
 
-        print(result[i])
+        
     savename = output_filename + '.json'
     with open(savename, "w") as outfile:
         json.dump(result, outfile)
