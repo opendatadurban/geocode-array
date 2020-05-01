@@ -492,17 +492,19 @@ def compare_all(address_G, lat_g, lon_g, d_g, address_ag, lat_ag, lon_ag, d_ag, 
 
 
 if __name__ == "__main__":
-    CSV = JSON = CSVOUT = JSONOUT = address = address_id = None
+    CSV = JSON = CSVOUT = JSONOUT = address = address_id = API_key = None
 
     parser = argparse.ArgumentParser(
-        description="geocode using ArcGIS, Nominatim, and CCT geocoder. Example: >>python geocode_prototype.py "
-                    "-input_filetype=csv -input_filename=sample -output_filename=out -output_filetype=csv --api_key=<>"
+        description="geocode using ArcGIS, Nominatim CCT geocoder, and Google (optional). Example: >>python "
+                    "geocode_prototype.py  -input_filetype=csv -input_filename=sample -output_filetype=csv "
+                    "-output_filename=out --key_file=key.json"
                    )
     parser.add_argument("-input_filetype", type=str, choices=['csv', 'json'], help="input file type. Options: csv, json")
     parser.add_argument("-input_filename", type=str, help="input filename eg: sample")
+    parser.add_argument("-output_filetype", type=str, choices=['csv', 'json'], help="output file type. Options: csv, "
+                                                                                    "json")
     parser.add_argument("-output_filename", type=str, help="output filename eg: sample")
-    parser.add_argument("-output_filetype", type=str, choices=['csv', 'json'], help="output file type. Options: csv, "                                                                   "json")
-    parser.add_argument("--key_file", required=False, default=None, type=str, help="your Google API Key in a json file")
+    parser.add_argument("--key_file", required=False, type=str, help="your Google API Key in a json file")
     args = parser.parse_args()
 
     if args.input_filetype.lower() == 'csv':
