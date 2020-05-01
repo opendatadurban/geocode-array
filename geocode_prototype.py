@@ -495,8 +495,9 @@ if __name__ == "__main__":
     CSV = JSON = CSVOUT = JSONOUT = address = address_id = None
 
     parser = argparse.ArgumentParser(
-        description="geocode using ArcGIS, Nominatim, and CCT geocoder. Example: >>python .\geocode_prototype.py csv "
-                    "sample sample_result None")
+        description="geocode using ArcGIS, Nominatim, and CCT geocoder. Example: >>python geocode_prototype.py "
+                    "-input_filetype=csv -input_filename=sample -output_filename=out -output_filetype=csv --api_key=<>"
+                   )
     parser.add_argument("-input_filetype", type=str, choices=['csv', 'json'], help="input file type. Options: csv, json")
     parser.add_argument("-input_filename", type=str, help="input filename eg: sample")
     parser.add_argument("-output_filename", type=str, help="output filename eg: sample")
