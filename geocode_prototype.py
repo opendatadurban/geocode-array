@@ -502,7 +502,7 @@ if __name__ == "__main__":
     parser.add_argument("-input_filename", type=str, help="input filename eg: sample")
     parser.add_argument("-output_filename", type=str, help="output filename eg: sample")
     parser.add_argument("-output_filetype", type=str, choices=['csv', 'json'], help="output file type. Options: csv, "                                                                   "json")
-    parser.add_argument("--api_key", required=False, default=None, type=str, help="your Google API Key")
+    parser.add_argument("--key_file", required=False, default=None, type=str, help="your Google API Key in a json file")
     args = parser.parse_args()
 
     if args.input_filetype.lower() == 'csv':
@@ -521,9 +521,14 @@ if __name__ == "__main__":
 
     input_filename = args.input_filename
     output_filename = args.output_filename
-    API_key = args.api_key
-
-    print('using Google API key: {}'.format(API_key))
+    try:
+        if args.key_file:
+            key_file = json.load(open(args.key_file, 'r'))
+            API_key = key_file['api_key']
+            print('using Google API key')
+    except Exception as e:
+        print('Error in key file:')
+        print(e)
 
     if JSON:
         # Opening JSON file
