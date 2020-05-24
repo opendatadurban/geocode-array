@@ -9,181 +9,76 @@ CCT geocoder and returns the output from the CCT geocoder as well as the best re
 in json and csv format.
 """
 
-import json
 import argparse
-import csv
+import logging
 
 from geocode_array import API_key
-from geocode_array import geocode_array
+from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY, INTERNAL_KEY, EXTERNAL_KEY
 
-if __name__ == "__main__":
-    CSV = JSON = CSVOUT = JSONOUT = address = address_id = API_key = None
+parser = argparse.ArgumentParser(
+    description="geocode using an array of Geocoders. Example: $ geocode-array  "
+                "--input_filename=sample.csv -output_filetype=csv "
+                "--output_filename=out --key_file=key.json"
+)
+parser.add_argument("--input_filename", type=str, help="input filename eg: sample.csv")
+parser.add_argument("--output_filename", type=str, help="output filename eg: sample_output.csv",
+                    default=STD_OUT)
+parser.add_argument("--key_file", type=str, help="your Google API Key in a json file")
+parser.add_argument("--verbose", help="Turns on debug logging", action="store_true", default=False)
+args = parser.parse_args()
 
-    parser = argparse.ArgumentParser(
-        description="geocode using ArcGIS, Nominatim CCT geocoder, and Google (optional). Example: >>python "
-                    "geocode-array  -input_filetype=csv -input_filename=sample -output_filetype=csv "
-                    "-output_filename=out --key_file=key.json"
-    )
-    parser.add_argument("-input_filetype", type=str, choices=['csv', 'json'],
-                        help="input file type. Options: csv, json")
-    parser.add_argument("-input_filename", type=str, help="input filename eg: sample")
-    parser.add_argument("-output_filetype", type=str, choices=['csv', 'json'], help="output file type. Options: csv, "
-                                                                                    "json")
-    parser.add_argument("-output_filename", type=str, help="output filename eg: sample")
-    parser.add_argument("--key_file", required=False, type=str, help="your Google API Key in a json file")
-    args = parser.parse_args()
+input_filename = args.input_filename
+output_filename = args.output_filename
 
-    if args.input_filetype.lower() == 'csv':
-        CSV = True
-        JSON = False
-    elif args.input_filetype.lower() == 'json':
-        JSON = True
-        CSV = False
+# Setting up logging
+log_level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=log_level,
+                    format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
 
-    if args.output_filetype.lower() == 'csv':
-        CSVOUT = True
-        JSONOUT = False
-    elif args.output_filetype.lower() == 'json':
-        JSONOUT = True
-        CSVOUT = False
+inputs = tuple(io_utils.input_file_entries(input_filename))
+result = {}
 
-    input_filename = args.input_filename
-    output_filename = args.output_filename
-    try:
-        if args.key_file:
-            key_file = json.load(open(args.key_file, 'r'))
-            API_key = key_file['api_key']
-            print('using Google API key')
-    except Exception as e:
-        print('Error in key file:')
-        print(e)
+for add_ID, addr in inputs:
+    if 'south africa' not in addr.lower():
+        addr += ', South Africa'
 
-    if JSON:
-        # Opening JSON file
-        loadname = input_filename + '.json'
-        with open(loadname, 'r') as openfile:
+    address_AG, lat_AG, lon_AG, d_AG = geocode_array.ArcGIS(addr)
+    address_N, lat_N, lon_N, d_N = geocode_array.Nominatim(addr)
 
-            # Reading from json file
-            data_j = json.load(openfile)
+    compare_args = [address_AG, lat_AG, lon_AG, d_AG,
+                    address_N, lat_N, lon_N, d_N,]
+    compare_func = geocode_array.compare
 
-        address_id = []
-        address = []
-        for i in range(len(data_j)):
-            address_id.append(data_j[str(i)]['Address_ID'])
-            address.append(data_j[str(i)]['Address_Cleaned'])
-
-    if CSV:
-        loadname = input_filename + '.csv'
-        with open(loadname, mode='r') as csv_file:
-            # csv_reader = csv.DictReader(csv_file)
-            csv_reader = csv.reader(csv_file)
-            address_id = []
-            address = []
-            for row in csv_reader:
-                address_id.append(row[0])
-                address.append(row[1])
-
-        address_id = address_id[1:]
-        address_id = [int(x) for x in address_id]
-        address = address[1:]
-    # %%
-
-    for i in range(len(address)):
-        # if "cape town" not in address[i].lower():
-        #     address[i] = address[i] + ', Cape Town'
-        if 'south africa' not in address[i].lower():
-            address[i] = address[i] + ', South Africa'
-    # %%
-
-    inputs = zip(address_id, address)
-    lats = []
-    lons = []
-    addresses = []
-    errors = []
-    cct_addresses = []
-    cct_lats = []
-    cct_lons = []
-    cct_errors = []
-
-    for add_ID, addr in inputs:
-        address_AG, lat_AG, lon_AG, d_AG = geocode_array.ArcGIS(addr)
-        address_N, lat_N, lon_N, d_N = geocode_array.Nominatim(addr)
-        if API_key is not None:
-            try:
-                print("API key detected")
-                address_G, lat_G, lon_G, d_G = geocode_array.Google(addr)
-                lat, lon, address_name, error = geocode_array.compare_all(address_G, lat_G, lon_G, d_G,
-                                                                          address_AG, lat_AG, lon_AG,
-                                                                          d_AG, address_N, lat_N, lon_N, d_N,
-                                                                          add_ID)
-            except Exception as e:
-                print('Possible invalid API key')
-                lat, lon, address_name, error = geocode_array.compare(address_AG, lat_AG, lon_AG, d_AG,
-                                                                      address_N, lat_N, lon_N, d_N,
-                                                                      add_ID)
-
-        else:
-            print("no API key detected")
-            lat, lon, address_name, error = geocode_array.compare(address_AG, lat_AG, lon_AG, d_AG,
-                                                                  address_N, lat_N, lon_N, d_N,
-                                                                  add_ID)
-        lats.append(lat)
-        lons.append(lon)
-        addresses.append(address_name)
-        errors.append(error)
-
-        cct_address, cct_loc, cct_error = geocode_array.CCT(add_ID, addr)
-        cct_addresses.append(cct_address)
+    if API_key is not None:
         try:
-            cct_lats.append(cct_loc['y'])
-            cct_lons.append(cct_loc['x'])
+            logging.debug("API key detected, giving Google a go...")
+            address_G, lat_G, lon_G, d_G = geocode_array.Google(addr)
+
+            compare_func = geocode_array.compare_all
+            compare_args += [address_G, lat_G, lon_G, d_G]
         except Exception as e:
-            cct_lats.append('NaN')
-            cct_lons.append('NaN')
-        cct_errors.append(cct_error)
-        # print('address: {}, location: {}'.format(cct_address, cct_loc))
+            logging.error(f'Possible invalid API key - \n{e.__class__}:"{e}"')
 
-    # make a dictionary
-    result = {}
+    lat, lon, address_name, error = compare_func(*compare_args, add_ID)
 
-    for i in range(len(address_id)):
-        if addresses[i] is None:
-            addresses[i] = address[i]
-        addresses[i] = addresses[i].replace(',', '')
-        if cct_addresses[i] is not None:
-            cct_addresses[i] = cct_addresses[i].replace(',', '')
+    cct_address, cct_loc, cct_error = geocode_array.CCT(add_ID, addr)
+    logging.debug(f"{cct_address, cct_loc, cct_error}")
+    cct_lat, cct_long = [cct_loc.get(dim) if isinstance(cct_loc, dict) else None
+                         for dim in ["y", "x"]]
 
-        result[address_id[i]] = {'result': {'esri_global': {'address': addresses[i],
-                                                            'lat': float(lats[i]),
-                                                            'lon': float(lons[i]),
-                                                            'error': float(errors[i])},
-                                            'cct_geocoder': {'address': cct_addresses[i],
-                                                             'lat': float(cct_lats[i]),
-                                                             'lon': float(cct_lons[i]),
-                                                             'error': float(cct_errors[i])}
-                                            }}
+    def _form_results_dict(lat, lon, address, error):
+        return {
+            "lat": float(lat) if lat is not None else None,
+            "long": float(lon) if lat is not None else None,
+            "address": str(address).replace(",", ""),
+            "error": float(error) if error is not None else None
+        }
 
-    if JSONOUT:
+    result[add_ID] = {
+        RESULT_KEY: {
+            EXTERNAL_KEY: _form_results_dict(lat, lon, address_name, error),
+            INTERNAL_KEY: _form_results_dict(cct_lat, cct_long, cct_address, cct_error),
+        }
+    }
 
-        savename = output_filename + '.json'
-        with open(savename, "w") as outfile:
-            json.dump(result, outfile)
-
-    elif CSVOUT:
-        # %% write as csv
-
-        fields = ['Address_ID', 'Address', 'Lat', 'Lon', 'Error', 'CCT_Address', 'CCT_Lat', 'CCT_Lon', 'CCT_Error']
-        # writing to csv file
-        savename = output_filename + '.csv'
-        with open(savename, 'w') as csvfile:
-            # creating a csv writer object
-            csvwriter = csv.writer(csvfile, lineterminator='\n')
-
-            # writing the fields
-            csvwriter.writerow(fields)
-            for i in range(len(address_id)):
-                row = [address_id[i], addresses[i], lats[i], lons[i], errors[i], cct_addresses[i], cct_lats[i],
-                       cct_lons[i],
-                       cct_errors[i]]
-                # writing the data rows
-                csvwriter.writerow(row)
+io_utils.output_data(result, output_filename)
