@@ -100,7 +100,7 @@ def input_file_entries(input_filename):
     for i, entry in enumerate(data):
         if _check_data_entry_validity(entry):
             logging.debug(f"Returning '{pprint.pformat(entry)}'")
-            yield entry[ADDRESS_ID_FIELD], entry[ADDRESS_FIELD]
+            yield entry[ADDRESS_ID_FIELD], str(entry[ADDRESS_FIELD])
         else:
             logging.warning(f"I'm not processing entry #{i}: '{pprint.pformat(entry)}'")
             continue
@@ -134,4 +134,4 @@ def get_api_key(key_filename):
     with open(key_filename, "r") as key_file:
         key_data = json.load(key_file)
 
-        return key_data[API_KEY]
+    return key_data[API_KEY]

@@ -12,7 +12,6 @@ in json and csv format.
 import argparse
 import logging
 
-from geocode_array import API_key
 from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY, INTERNAL_KEY, EXTERNAL_KEY
 
 parser = argparse.ArgumentParser(
@@ -29,21 +28,22 @@ args = parser.parse_args()
 
 input_filename = args.input_filename
 output_filename = args.output_filename
+key_filename = args.key_file
 
 # Setting up logging
 log_level = logging.DEBUG if args.verbose else logging.INFO
 logging.basicConfig(level=log_level,
                     format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
 
-if key_filename is not None:
-    google_api_key = io_utils.get_api_key(key_filename)
+google_api_key = io_utils.get_api_key(key_filename) if key_filename is not None else None
 
 inputs = tuple(io_utils.input_file_entries(input_filename))
 result = {}
 
 for add_ID, addr in inputs:
+    logging.debug(f"Processing {add_ID}: '{addr}'")
     if 'south africa' not in addr.lower():
-        addr += ', South Africa'
+       addr += ', South Africa'
 
     address_AG, lat_AG, lon_AG, d_AG = geocode_array.ArcGIS(addr)
     address_N, lat_N, lon_N, d_N = geocode_array.Nominatim(addr)
@@ -52,22 +52,16 @@ for add_ID, addr in inputs:
                     address_N, lat_N, lon_N, d_N,]
     compare_func = geocode_array.compare
 
-    if key_filename is not None:
-        try:
-            logging.debug("API key detected, giving Google a go...")
-            address_G, lat_G, lon_G, d_G = geocode_array.Google(addr)
+    if google_api_key is not None:
+        logging.debug("API key detected, giving Google a go...")
+        address_G, lat_G, lon_G, d_G = geocode_array.Google(addr, google_api_key)
 
-            compare_func = geocode_array.compare_all
-            compare_args += [address_G, lat_G, lon_G, d_G]
-        except Exception as e:
-            logging.error(f'Possible invalid API key - \n{e.__class__}:"{e}"')
+        compare_func = geocode_array.compare_all
+        compare_args += [address_G, lat_G, lon_G, d_G]
 
     lat, lon, address_name, error = compare_func(*compare_args, add_ID)
 
-    cct_address, cct_loc, cct_error = geocode_array.CCT(add_ID, addr)
-    logging.debug(f"{cct_address, cct_loc, cct_error}")
-    cct_lat, cct_long = [cct_loc.get(dim) if isinstance(cct_loc, dict) else None
-                         for dim in ["y", "x"]]
+    cct_address, cct_lat, cct_long, cct_error = geocode_array.CCT(addr)
 
     def _form_results_dict(lat, lon, address, error):
         return {

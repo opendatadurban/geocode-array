@@ -7,16 +7,17 @@ CCT geocoder and returns the output from the CCT geocoder as well as the best re
 in json and csv format.
 """
 
-import json
-import urllib
-import urllib.request
-import argparse
-import csv
+import logging
+import itertools
 
-from geocode_array import API_key
+from geocode_array import DISPERSION_THRESHOLD
+from geocode_array.ArcGIS import ArcGIS as arcgis
+from geocode_array.CCT import CCT as cct
+from geocode_array.Google import Google as google
+from geocode_array.Nominatim import Nominatim as nominatim
 
 
-def Google(addr):
+def Google(addr, api_key):
     """
     Parameters: add_ID (Address ID) , addr (Address) 
     Step 1: Uses Google geocoder to find address co-ordinates. 
@@ -25,82 +26,7 @@ def Google(addr):
     Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
     Returns: address_G (address from step 1), lat_G (latitude from step 1), lon_G (longitude from step 1), d_G (distance from step 4)
     """
-    try:
-        values = {"address": addr,
-                  "key": API_key}
-
-        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
-
-        req = urllib.request.Request(
-            request_string,
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        r = urllib.request.urlopen(req)
-        code = r.getcode()
-        if code == 200:
-            result_g = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            result_g = []
-        address_g = result_g['results'][0]['formatted_address']
-
-        # reverse
-        lat_g, lon_g = result_g['results'][0]['geometry']['location']['lat'], \
-                       result_g['results'][0]['geometry']['location']['lng']
-
-        values = {"latlng": '{},{}'.format(lat_g, lon_g),
-                  "key": API_key}
-
-        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
-        req = urllib.request.Request(
-            request_string,
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        r = urllib.request.urlopen(req)
-        code = r.getcode()
-        if code == 200:
-            reverse_result_g = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            reverse_result_g = []
-
-        local = reverse_result_g['results'][0]['formatted_address']
-
-        values = {"address": local,
-                  "key": API_key}
-
-        request_string = 'https://maps.googleapis.com/maps/api/geocode/json?{}'.format(urllib.parse.urlencode(values))
-
-        req = urllib.request.Request(
-            request_string,
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        r = urllib.request.urlopen(req)
-        code = r.getcode()
-        if code == 200:
-            result_rev2_g = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            result_rev2_g = []
-
-        # reverse
-        lat2_g, lon2_g = result_rev2_g['results'][0]['geometry']['location']['lat'], \
-                         result_rev2_g['results'][0]['geometry']['location']['lng']
-
-        # get distance between points
-        d_g = ((float(lat2_g) - float(lat_g)) ** 2 + (float(lon2_g) - float(lon_g)) ** 2) ** 0.5
-
-    except Exception as e:
-        d_g = 100000
-        address_g = None
-        lat_g = 'NaN'
-        lon_g = 'NaN'
+    address_g, lat_g, lon_g, d_g = google().double_geocode(addr, api_key)
 
     return address_g, lat_g, lon_g, d_g
 
@@ -114,80 +40,7 @@ def ArcGIS(addr):
     Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
     Returns: address_AG (address from step 1), lat_AG (latitude from step 1), lon_AG (longitude from step 1), d_AG (distance from step 4)
     """
-    try:
-        request_string = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?'
-        values = {"singleLine": addr,
-                  "outSR": 4326,
-                  "f": "json"}
-        req = urllib.request.Request(
-            request_string,
-            data=urllib.parse.urlencode(values).encode("utf-8"),
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        f = urllib.request.urlopen(req)
-        code = f.getcode()
-        if code == 200:
-            result_ag = json.loads(f.read().decode('utf-8'))
-        else:
-            result_ag = []
-            print('Got incorrect code: {}'.format(code))
-
-        address_ag = result_ag['candidates'][0]['address']
-
-        # reverse
-        lon_ag, lat_ag = result_ag['candidates'][0]['location']['x'], result_ag['candidates'][0]['location']['y']
-        request_string = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?'
-        values = {"location": '{},{}'.format(lon_ag, lat_ag),
-                  "outSR": 4326,
-                  "f": "pjson"}
-        req = urllib.request.Request(
-            request_string,
-            data=urllib.parse.urlencode(values).encode("utf-8"),
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        f = urllib.request.urlopen(req)
-        code = f.getcode()
-        if code == 200:
-            reverse_result_ag = json.loads(f.read().decode('utf-8'))
-        else:
-            reverse_result_ag = []
-            print('Got incorrect code: {}'.format(code))
-
-        request_string = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?'
-        values = {"singleLine": reverse_result_ag['address']['LongLabel'],
-                  "outSR": 4326,
-                  "f": "json"}
-        req = urllib.request.Request(
-            request_string,
-            data=urllib.parse.urlencode(values).encode("utf-8"),
-            headers={
-                'User-Agent': 'Chrome'
-            }
-        )
-        f = urllib.request.urlopen(req)
-        code = f.getcode()
-        if code == 200:
-            result_rev2_ag = json.loads(f.read().decode('utf-8'))
-        else:
-            result_rev2_ag = []
-            print('Got incorrect code: {}'.format(code))
-
-        lon2_ag, lat2_ag = result_rev2_ag['candidates'][0]['location']['x'], \
-                           result_rev2_ag['candidates'][0]['location']['y']
-
-        # get distance between points
-        d_ag = ((float(lat2_ag) - float(lat_ag)) ** 2 + (float(lon2_ag) - float(lon_ag)) ** 2) ** 0.5
-        # print('distance: {}'.format(d_AG))
-
-    except Exception as e:
-        d_ag = 100000
-        address_ag = None
-        lat_ag = 'NaN'
-        lon_ag = 'NaN'
+    address_ag, lat_ag, lon_ag, d_ag = arcgis().double_geocode(addr)
 
     return address_ag, lat_ag, lon_ag, d_ag
 
@@ -201,77 +54,12 @@ def Nominatim(addr):
     Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
     Returns: address_N (address from step 1), lat_N (latitude from step 1), lon_N (longitude from step 1), d_N (distance from step 4)
     """
-
-    try:
-        values = {"q": addr}
-        request_string = 'https://nominatim.openstreetmap.org/?addressdetails=1&format=json&limit=1&{}'.format(
-            urllib.parse.urlencode(values))
-        req = urllib.request.Request(
-            request_string,
-            headers={'User-Agent': 'Chrome'}
-        )
-        f = urllib.request.urlopen(req)
-
-        code = f.getcode()
-        if code == 200:
-            result_n = json.loads(f.read().decode('utf-8'))
-        else:
-            result_n = []
-            print('Got incorrect code: {}'.format(code))
-
-        address_n = result_n[0]['display_name']
-
-        # reverse
-        lat_n, lon_n = result_n[0]['lat'], result_n[0]['lon']
-        request_string = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={}&lon={}'.format(lat_n, lon_n)
-
-        req = urllib.request.Request(
-            request_string,
-            headers={'User-Agent': 'Chrome'}
-        )
-        f = urllib.request.urlopen(req)
-
-        code = f.getcode()
-        if code == 200:
-            reverse_result_n = json.loads(f.read().decode('utf-8'))
-        else:
-            reverse_result_n = []
-            print('Got incorrect code: {}'.format(code))
-
-        # print('reverse: ',reverse_result_n['display_name'])
-
-        local = reverse_result_n['display_name']
-        values = {"q": local}
-        request_string = 'https://nominatim.openstreetmap.org/?addressdetails=1&format=json&limit=1&{}'.format(
-            urllib.parse.urlencode(values))
-        req = urllib.request.Request(
-            request_string,
-            headers={'User-Agent': 'Chrome'}
-        )
-        f = urllib.request.urlopen(req)
-
-        code = f.getcode()
-        if code == 200:
-            result_rev2_n = json.loads(f.read().decode('utf-8'))
-        else:
-            result_rev2_n = []
-            print('Got incorrect code: {}'.format(code))
-
-        lat2_n, lon2_n = result_rev2_n[0]['lat'], result_rev2_n[0]['lon']
-
-        # get distance between points
-        d_n = ((float(lat2_n) - float(lat_n)) ** 2 + (float(lon2_n) - float(lon_n)) ** 2) ** 0.5
-        # print('distance: {}'.format(d_N))
-    except Exception as e:
-        d_n = 100000
-        address_n = None
-        lat_n = 'NaN'
-        lon_n = 'NaN'
+    address_n, lat_n, lon_n, d_n = nominatim().double_geocode(addr)
 
     return address_n, lat_n, lon_n, d_n
 
 
-def CCT(add_id, addr):
+def CCT(addr):
     """
     Parameters: add_ID (Address ID) , addr (Address) 
     Step 1: Uses CCT geocoder to find address co-ordinates. 
@@ -280,36 +68,9 @@ def CCT(add_id, addr):
     Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
     Returns: cct_address (address from step 1), cct_loc (latitude and longitude from step 1), cct_error (distance from step 4)
     """
+    address_ct, lat_ct, lon_ct, d_ct = cct().double_geocode(addr)
 
-    try:
-        request_string = 'https://citymaps.capetown.gov.za/agsext1/rest/services/Here/GC_CoCT/GeocodeServer' \
-                         '/geocodeAddresses '
-        values = {"addresses": {"records": [{"attributes": {"OBJECTID": add_ID, "SingleLine": addr}}]},
-                  "outSR": 4326,
-                  "f": "json"}
-        req = urllib.request.Request(request_string,
-                                     data=urllib.parse.urlencode(values).encode("utf-8"),
-                                     headers={'User-Agent': 'Chrome'})
-        r = urllib.request.urlopen(req)
-        code = r.getcode()
-        if code == 200:
-            result_cct = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            result_cct = []
-        # print(result_cct["locations"][0]['address'], result_cct["locations"][0]['location'])
-        cct_address = result_cct["locations"][0]['address']
-
-        cct_loc = result_cct["locations"][0]['location']
-        cct_lat, cct_lon = result_cct["locations"][0]['location']['y'], result_cct["locations"][0]['location']['x']
-
-        # print(cct_address, cct_lat, cct_lon)
-
-        request_string = 'https://citymaps.capetown.gov.za/agsext1/rest/services/Here/GC_CoCT/GeocodeServer' \
-                         '/reverseGeocode '
-        values = {"location": str(cct_loc),
-                  "outSR": 4326,
-                  "f": "pjson"}
+    return address_ct, lat_ct, lon_ct, d_ct
 
         req = urllib.request.Request(request_string,
                                      data=urllib.parse.urlencode(values).encode("utf-8"),
