@@ -14,7 +14,7 @@ import os
 import pprint
 
 from geocode_array import JSON_EXT, CSV_EXT, STD_OUT, ADDRESS_ID_FIELD, ADDRESS_FIELD, RESULT_KEY, INTERNAL_KEY, \
-    EXTERNAL_KEY
+    EXTERNAL_KEY, API_KEY
 
 DATA_READER_DICT = {
     JSON_EXT: lambda input_file: iter(json.load(input_file)),
@@ -128,3 +128,10 @@ def output_data(data, output_filename):
         data_writer_func = DATA_WRITER_DICT.get(ext, _json_writer)
         logging.debug(f"Writing data: \n{pprint.pformat(data)}\n")
         data_writer_func(data_file, data)
+
+
+def get_api_key(key_filename):
+    with open(key_filename, "r") as key_file:
+        key_data = json.load(key_file)
+
+        return key_data[API_KEY]

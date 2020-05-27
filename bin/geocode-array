@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument("--input_filename", type=str, help="input filename eg: sample.csv")
 parser.add_argument("--output_filename", type=str, help="output filename eg: sample_output.csv",
                     default=STD_OUT)
-parser.add_argument("--key_file", type=str, help="your Google API Key in a json file")
+parser.add_argument("--key_file", type=str, help="your Google API Key in a json file", default=None)
 parser.add_argument("--verbose", help="Turns on debug logging", action="store_true", default=False)
 args = parser.parse_args()
 
@@ -34,6 +34,9 @@ output_filename = args.output_filename
 log_level = logging.DEBUG if args.verbose else logging.INFO
 logging.basicConfig(level=log_level,
                     format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
+
+if key_filename is not None:
+    google_api_key = io_utils.get_api_key(key_filename)
 
 inputs = tuple(io_utils.input_file_entries(input_filename))
 result = {}
@@ -49,7 +52,7 @@ for add_ID, addr in inputs:
                     address_N, lat_N, lon_N, d_N,]
     compare_func = geocode_array.compare
 
-    if API_key is not None:
+    if key_filename is not None:
         try:
             logging.debug("API key detected, giving Google a go...")
             address_G, lat_G, lon_G, d_G = geocode_array.Google(addr)
