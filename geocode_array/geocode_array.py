@@ -91,10 +91,14 @@ def combine_results(result_tuples) -> (float or None, float or None, float or No
         # OK, just returning the first result
         first_result, *_ = result_tuples
         logging.debug("Just returning the first result")
-        return first_result[2], first_result[3], None, first_result[0]
+        return first_result[2], first_result[3], None, [first_result[0]]
 
-    if min_result[-1] is not None and min_result[-1] < DISPERSION_THRESHOLD:
+    elif min_result[-1] is not None and min_result[-1] < DISPERSION_THRESHOLD:
         logging.debug("Returning single best result")
         return min_result[2], min_result[3], min_result[-1], _get_geocoders([min_result])
+
+    else:
+        logging.warning("NO VALID RESULTS FOUND")
+        return None, None, None, None
 
 
