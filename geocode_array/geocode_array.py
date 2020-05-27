@@ -7,10 +7,31 @@ CCT geocoder and returns the output from the CCT geocoder as well as the best re
 in json and csv format.
 """
 
-import logging
 import itertools
+from multiprocessing.pool import ThreadPool
+import logging
 
-from geocode_array import DISPERSION_THRESHOLD
+from geocode_array import DISPERSION_THRESHOLD, Geocoder
+
+
+def threaded_geocode(geocoder_list, address):
+    for gc in geocoder_list:
+        assert isinstance(gc, Geocoder.Geocoder), f"{gc} isn't a Geocoder, I'm afriad"
+
+    with ThreadPool(len(geocoder_list)) as thread_pool:
+        results = thread_pool.map(lambda gc: gc.geocode(address), geocoder_list)
+
+    return results
+
+
+def threaded_double_geocode(geocoder_list, address):
+    for gc in geocoder_list:
+        assert isinstance(gc, Geocoder.Geocoder), f"{gc} isn't a Geocoder, I'm afriad"
+
+    with ThreadPool(len(geocoder_list)) as thread_pool:
+        results = thread_pool.map(lambda gc: gc.double_geocode(address), geocoder_list)
+
+    return results
 
 
 def _get_geocoders(result_tuples) -> [str]:

@@ -42,7 +42,7 @@ google_api_key = io_utils.get_api_key(key_filename) if key_filename is not None 
 
 # Setting up geocoders
 geocoder_funcs = [
-    (gc.__name__, gc(proxy_url=proxy_url).geocode, gc(proxy_url=proxy_url).double_geocode)
+    (gc.__name__, gc(proxy_url=proxy_url))
     for gc in (
         ArcGIS.ArcGIS,
         Nominatim.Nominatim,
@@ -51,10 +51,17 @@ geocoder_funcs = [
 ]
 if google_api_key is not None:
     geocoder_funcs += [
-        (Google.Google.__name__,
-         Google.Google(proxy_url=proxy_url, api_key=google_api_key).geocode,
-         Google.Google(proxy_url=proxy_url, api_key=google_api_key).double_geocode)
+        (Google.Google.__name__, Google.Google(proxy_url=proxy_url, api_key=google_api_key))
     ]
+
+geocoder_names = [
+        geocoder_class
+        for geocoder_class, _ in geocoder_funcs
+]
+geocoders = [
+    geocoder
+    for _, geocoder in geocoder_funcs
+]
 
 logging.info(f"Using the following Geocoders: {', '.join(map(lambda gcf: gcf[0], geocoder_funcs))}")
 
@@ -64,9 +71,10 @@ for add_ID, addr in inputs:
     logging.debug(f"Processing {add_ID}: '{addr}'")
 
     logging.info("Geocod[ing]...")
+    geocoder_results = geocode_array.threaded_geocode(geocoders, addr)
     result_tuples = [
-        (geocoder_class, *geocoder(addr))
-        for geocoder_class, geocoder, _ in geocoder_funcs
+        (geocoder_class, *results)
+        for geocoder_class, results in zip(geocoder_names, geocoder_results)
     ]
     logging.info("...Geocod[ed]")
     logging.debug(f"result_tuples={result_tuples}")
@@ -83,13 +91,13 @@ for add_ID, addr in inputs:
     best_result = geocode_array.combine_results(result_tuples)
     logging.info(f"...F[ound] best result for '{addr}': '{best_result}'")
 
-    lat, lon, error, geocoders = best_result
+    lat, lon, error, geocoders_used = best_result
 
     result[add_ID] = {
         RESULT_KEY: {
             "address": addr, "lat": lat, "lon": lon, "error": error,
-            "num_geocoders": len(geocoders) if geocoders is not None else 0,
-            "geocoders": ";".join(geocoders) if geocoders is not None else None
+            "num_geocoders": len(geocoders_used) if geocoders_used is not None else 0,
+            "geocoders": ";".join(geocoders_used) if geocoders_used is not None else None
         }
     }
 
