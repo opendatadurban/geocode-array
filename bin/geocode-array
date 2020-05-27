@@ -60,42 +60,36 @@ logging.info(f"Using the following Geocoders: {', '.join(map(lambda gcf: gcf[0],
 
 inputs = tuple(io_utils.input_file_entries(input_filename))
 result = {}
-
 for add_ID, addr in inputs:
     logging.debug(f"Processing {add_ID}: '{addr}'")
-    if 'south africa' not in addr.lower():
-       addr += ', South Africa'
 
-    address_AG, lat_AG, lon_AG, d_AG = geocode_array.ArcGIS(addr)
-    address_N, lat_N, lon_N, d_N = geocode_array.Nominatim(addr)
+    logging.info("Geocod[ing]...")
+    result_tuples = [
+        (geocoder_class, *geocoder(addr))
+        for geocoder_class, _, geocoder in geocoder_funcs
+    ]
+    logging.info("...Geocod[ed]")
+    logging.debug(f"result_tuples={result_tuples}")
 
-    compare_args = [address_AG, lat_AG, lon_AG, d_AG,
-                    address_N, lat_N, lon_N, d_N,]
-    compare_func = geocode_array.compare
+    logging.info("Filter[ing]...")
+    result_tuples = [
+        result_tuple
+        for result_tuple in result_tuples
+        if None not in result_tuple[:3]
+    ]
+    logging.info("Filter[ed]")
 
-    if google_api_key is not None:
-        logging.debug("API key detected, giving Google a go...")
-        address_G, lat_G, lon_G, d_G = geocode_array.Google(addr, google_api_key)
+    logging.info("Find[ing] best result...")
+    best_result = geocode_array.combine_results(result_tuples)
+    logging.info(f"...F[ound] best result for '{addr}': '{best_result}'")
 
-        compare_func = geocode_array.compare_all
-        compare_args += [address_G, lat_G, lon_G, d_G]
-
-    lat, lon, address_name, error = compare_func(*compare_args, add_ID)
-
-    cct_address, cct_lat, cct_long, cct_error = geocode_array.CCT(addr)
-
-    def _form_results_dict(lat, lon, address, error):
-        return {
-            "lat": float(lat) if lat is not None else None,
-            "long": float(lon) if lat is not None else None,
-            "address": str(address).replace(",", ""),
-            "error": float(error) if error is not None else None
-        }
+    lat, lon, error, geocoders = best_result
 
     result[add_ID] = {
         RESULT_KEY: {
-            EXTERNAL_KEY: _form_results_dict(lat, lon, address_name, error),
-            INTERNAL_KEY: _form_results_dict(cct_lat, cct_long, cct_address, cct_error),
+            "address": addr, "lat": lat, "lon": lon, "error": error,
+            "num_geocoders": len(geocoders) if geocoders is not None else 0,
+            "geocoders": ";".join(geocoders) if geocoders is not None else None
         }
     }
 
