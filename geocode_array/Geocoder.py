@@ -123,7 +123,8 @@ class Geocoder:
         coords = self._geocode(address_string, *extra_args)
         logging.debug(f"Geocod[ed] '{address_string}' -> '{coords}'")
 
-        return address_string, coords
+        lat, lon = coords
+        return address_string, lat, lon
 
     def double_geocode(self, address_string, *extra_args) -> (str or None, float or None, float or None, float or None):
         """
@@ -150,7 +151,8 @@ class Geocoder:
 
         if verification_address is None:
             logging.warning("Verification reverse geocoding failed - returning unverified initial geocode")
-            return address_string, *initial_coords, None
+            lat, lon = initial_coords
+            return address_string, lat, lon, None
 
         logging.debug(f"Geocod[ing] '{verification_address}'")
         verification_coords = self._geocode(verification_address, *extra_args)
@@ -166,4 +168,5 @@ class Geocoder:
         logging.debug(f"Calculat[ed] error")
 
         # hey, it actually worked
-        return verification_address, *initial_coords, distance
+        lat, lon = initial_coords
+        return verification_address, lat, lon, distance
