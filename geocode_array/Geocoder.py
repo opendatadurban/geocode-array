@@ -15,7 +15,23 @@ def _make_request(request_base_url, request_url_args) -> str or None:
         headers={**REQUEST_HEADER_DICT}
     )
 
-    resp = urllib.request.urlopen(req)
+    tries = REQUEST_TRIES
+    while tries > 0:
+        try:
+            resp = urllib.request.urlopen(req)
+            tries = 0
+        except urllib.error.URLError as e:
+            logging.warning(f"URL request failed with {e.__class__}: '{e}'")
+
+            tries -= 1
+            if tries == 0:
+                logging.error("Tries exceeded - giving up")
+                return None
+            else:
+                delay = REQUEST_DELAY*(REQUEST_TRIES-tries+1)
+                logging.debug(f"Sleeping for '{delay}'")
+                time.sleep(delay)
+
     logging.debug(f"Response Code: {resp.getcode()}")
     code = resp.getcode()
 

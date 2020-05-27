@@ -15,3 +15,6 @@ INTERNAL_KEY = "internal"
 REQUEST_HEADER_DICT = {'User-Agent': 'Chrome', "Accept": "*/json"}
 
 DISPERSION_THRESHOLD = 0.001
+
+REQUEST_TRIES = 3
+REQUEST_DELAY = 0.1
