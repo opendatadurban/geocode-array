@@ -9,8 +9,6 @@ ADDRESS_FIELD = "Address_Cleaned"
 API_KEY = "api_key"
 
 RESULT_KEY = "result"
-EXTERNAL_KEY = "external"
-INTERNAL_KEY = "internal"
 
 REQUEST_HEADER_DICT = {'User-Agent': 'Chrome', "Accept": "*/json"}
 

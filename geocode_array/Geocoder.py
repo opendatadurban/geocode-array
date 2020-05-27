@@ -1,12 +1,14 @@
 import json
 import logging
 import pprint
+import time
+import urllib.error
 import urllib.request
 
-from geocode_array import REQUEST_HEADER_DICT
+from geocode_array import REQUEST_HEADER_DICT, REQUEST_TRIES, REQUEST_DELAY
 
 
-def _make_request(request_base_url, request_url_args) -> str or None:
+def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
     logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
 
     request_string = f"{request_base_url}?{request_url_args}"
@@ -14,6 +16,11 @@ def _make_request(request_base_url, request_url_args) -> str or None:
         request_string,
         headers={**REQUEST_HEADER_DICT}
     )
+    if proxy_url is not None:
+        proxy = urllib.request.ProxyHandler({'http': proxy_url, 'https': proxy_url})
+        auth = urllib.request.HTTPBasicAuthHandler()
+        opener = urllib.request.build_opener(proxy, auth, urllib.request.HTTPHandler)
+        urllib.request.install_opener(opener)
 
     tries = REQUEST_TRIES
     while tries > 0:
@@ -71,6 +78,9 @@ class Geocoder:
     reverse_geocode_url = NotImplemented
     geocode_url = NotImplemented
 
+    def __init__(self, proxy_url=None, **kwargs):
+        self.proxy_url = proxy_url
+
     def _form_reverse_geocode_request_args(self, *args) -> str:
         raise NotImplementedError
 
@@ -78,7 +88,7 @@ class Geocoder:
         raise NotImplementedError
 
     def _reverse_geocode(self, *coords) -> str or None:
-        result = _make_request(self.reverse_geocode_url, self._form_reverse_geocode_request_args(*coords))
+        result = _make_request(self.reverse_geocode_url, self._form_reverse_geocode_request_args(*coords), proxy_url=self.proxy_url)
 
         if result is None:
             return None
@@ -93,19 +103,30 @@ class Geocoder:
     def _get_coords_from_geocode(self, response) -> (float, float) or (None, None):
         raise NotImplementedError
 
-    def _geocode(self, *address) -> str or None:
-        result = _make_request(self.geocode_url, self._form_geocode_request_args(*address))
+    def _geocode(self, *address) -> (float, float) or None:
+        result = _make_request(self.geocode_url, self._form_geocode_request_args(*address), proxy_url=self.proxy_url)
 
         if result is None:
             return None
 
         coords = self._get_coords_from_geocode(result)
 
+        if None in coords:
+            return None
+
         return coords
+
+    def geocode(self, address_string, *extra_args) -> (float, float) or None:
+        logging.debug(f"address_string={address_string}, extra_args={extra_args}")
+
+        logging.debug(f"Geocod[ing] '{address_string}'")
+        coords = self._geocode(address_string, *extra_args)
+        logging.debug(f"Geocod[ed] '{address_string}' -> '{coords}'")
+
+        return address_string, coords
 
     def double_geocode(self, address_string, *extra_args) -> (str or None, float or None, float or None, float or None):
         """
-
         Step 1: Uses geocoder to find initial co-ordinates.
         Step 2: Reverse initial co-ordinates to find verification address.
         Step 3: Reverse geocoded verification address to find verification co-ordinates.
@@ -119,7 +140,7 @@ class Geocoder:
         initial_coords = self._geocode(address_string, *extra_args)
         logging.debug(f"Geocod[ed] '{address_string}' -> '{initial_coords}'")
 
-        if None in initial_coords:
+        if initial_coords is None:
             logging.warning("Initial geocoding failed - returning nulls")
             return None, None, None, None
 
@@ -135,7 +156,7 @@ class Geocoder:
         verification_coords = self._geocode(verification_address, *extra_args)
         logging.debug(f"Geocod[ed] '{verification_address}' -> '{verification_coords}'")
 
-        if None in verification_coords:
+        if verification_coords is None:
             logging.error("Verification geocoding failed - raising runtime error as *this really* shouldn't happen")
             raise RuntimeError(f"Verification geocoding failed for '{address_string}'! "
                                "This means the geocoder and reverse geocoder are inconsistent")

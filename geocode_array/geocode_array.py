@@ -11,244 +11,88 @@ import logging
 import itertools
 
 from geocode_array import DISPERSION_THRESHOLD
-from geocode_array.ArcGIS import ArcGIS as arcgis
-from geocode_array.CCT import CCT as cct
-from geocode_array.Google import Google as google
-from geocode_array.Nominatim import Nominatim as nominatim
 
 
-def Google(addr, api_key):
+def _get_geocoders(result_tuples) -> [str]:
+    gc_classes = [
+        result_tuple[0] for result_tuple in result_tuples
+    ]
+
+    return gc_classes
+
+
+def _find_mean_pos(result_tuples) -> float:
+    lat_sum = sum([result_tuple[2] for result_tuple in result_tuples])
+    lon_sum = sum([result_tuple[3] for result_tuple in result_tuples])
+    tuple_len = len(result_tuples)
+
+    lat_mean = lat_sum / tuple_len
+    lon_mean = lon_sum / tuple_len
+
+    return lat_mean, lon_mean
+
+
+def _find_dist_mean(lat_mean, lon_mean, result_tuples) -> float:
+    """Find the average Euclidean distance to a point"""
+    dist_sum = sum([
+        ((result_tuple[2] - lat_mean) ** 2 + (result_tuple[3] - lon_mean) ** 2) ** 0.5
+        for result_tuple in result_tuples
+    ])
+    tuple_len = len(result_tuples)
+
+    return dist_sum / tuple_len
+
+
+def combine_results(result_tuples) -> (float or None, float or None, float or None, [str] or None):
     """
-    Parameters: add_ID (Address ID) , addr (Address) 
-    Step 1: Uses Google geocoder to find address co-ordinates. 
-    Step 2: Reverse geocodes to find address.
-    Step 3: Geocodes reverse geocoded address to find new co-ordinates.
-    Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
-    Returns: address_G (address from step 1), lat_G (latitude from step 1), lon_G (longitude from step 1), d_G (distance from step 4)
+    Compares outputs from various geocoders. Assumes that there are no null values
+
+    Uses the following algorithm:
+        1. Finds the average location for the combination of results that has the lowest dispersion (mean distance to
+        centre, within a certain threshold (~one hectare). Starts out with trying to combine everything, then work
+        through the permutations.
+        2. If there is no combination that has a dispersion below that threshold, select the result with the lowest
+        internal error
+        3. Finally, if that isn't possible, just take the first value
     """
-    address_g, lat_g, lon_g, d_g = google().double_geocode(addr, api_key)
+    # Finding the average location
+    logging.debug(f"Trying all results from {_get_geocoders(result_tuples)}...")
+    lat_mean, lon_mean = _find_mean_pos(result_tuples)
+    dispersion = _find_dist_mean(lat_mean, lon_mean, result_tuples)
 
-    return address_g, lat_g, lon_g, d_g
+    if dispersion < DISPERSION_THRESHOLD:
+        logging.debug("Returning mean of all results")
+        return lat_mean, lon_mean, dispersion, _get_geocoders(result_tuples)
 
+    # Working through various permutations
+    for c in range(len(result_tuples) - 1, 1, -1):
+        logging.debug(f"Taking {c} values...")
+        perm_means = [
+            _find_mean_pos(perm_tuples)
+            for perm_tuples in itertools.permutations(result_tuples, c)
+        ]
 
-def ArcGIS(addr):
-    """
-    Parameters: add_ID (Address ID) , addr (Address) 
-    Step 1: Uses ArcGIS geocoder to find address co-ordinates. 
-    Step 2: Reverse geocodes to find address.
-    Step 3: Geocodes reverse geocoded address to find new co-ordinates.
-    Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
-    Returns: address_AG (address from step 1), lat_AG (latitude from step 1), lon_AG (longitude from step 1), d_AG (distance from step 4)
-    """
-    address_ag, lat_ag, lon_ag, d_ag = arcgis().double_geocode(addr)
+        perm_results = [
+            (*perm_coords, _find_dist_mean(*perm_coords, perm_tuples), _get_geocoders(perm_tuples))
+            for perm_coords, perm_tuples in zip(perm_means, itertools.permutations(result_tuples, c))
+        ]
 
-    return address_ag, lat_ag, lon_ag, d_ag
+        min_result = min(perm_results,
+                         key=lambda perm_result: perm_result[-2])
+        if min_result[-2] < DISPERSION_THRESHOLD:
+            logging.debug(f"Returning best combination of {c} results")
+            return min_result
 
+    # OK, finding the single result with the lowest internal error
+    min_result = min(result_tuples,
+                     key=lambda result_tuple: (result_tuple[-1] if result_tuple[-1] is not None
+                                               else DISPERSION_THRESHOLD))
+    if min_result[-1] < DISPERSION_THRESHOLD:
+        logging.debug("Returning single best result")
+        return min_result[2], min_result[3], min_result[-1], _get_geocoders([min_result])
 
-def Nominatim(addr):
-    """
-    Parameters: add_ID (Address ID) , addr (Address) 
-    Step 1: Uses Nominatim geocoder to find address co-ordinates. 
-    Step 2: Reverse geocodes to find address.
-    Step 3: Geocodes reverse geocoded address to find new co-ordinates.
-    Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
-    Returns: address_N (address from step 1), lat_N (latitude from step 1), lon_N (longitude from step 1), d_N (distance from step 4)
-    """
-    address_n, lat_n, lon_n, d_n = nominatim().double_geocode(addr)
+    # OK, just returning the first result
+    first_result, *_ = result_tuples
+    logging.debug("Just returning the first result")
 
-    return address_n, lat_n, lon_n, d_n
-
-
-def CCT(addr):
-    """
-    Parameters: add_ID (Address ID) , addr (Address) 
-    Step 1: Uses CCT geocoder to find address co-ordinates. 
-    Step 2: Reverse geocodes to find address.
-    Step 3: Geocodes reverse geocoded address to find new co-ordinates.
-    Step 4: Calculates distance between both sets of co-ordinates to be used as measure of error.
-    Returns: cct_address (address from step 1), cct_loc (latitude and longitude from step 1), cct_error (distance from step 4)
-    """
-    address_ct, lat_ct, lon_ct, d_ct = cct().double_geocode(addr)
-
-    return address_ct, lat_ct, lon_ct, d_ct
-
-        req = urllib.request.Request(request_string,
-                                     data=urllib.parse.urlencode(values).encode("utf-8"),
-                                     headers={'User-Agent': 'Chrome'})
-        r = urllib.request.urlopen(req)
-        code = r.getcode()
-        if code == 200:
-            reverse_result = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            reverse_result = []
-
-        # print(reverse_result['address']['Match_addr'])
-        reverse_addr = reverse_result['address']['Match_addr']
-
-        request_string = 'https://citymaps.capetown.gov.za/agsext1/rest/services/Here/GC_CoCT/GeocodeServer' \
-                         '/geocodeAddresses '
-        values = {"addresses": {"records": [{"attributes": {"OBJECTID": add_ID, "SingleLine": reverse_addr}}]},
-                  "outSR": 4326,
-                  "f": "json"}
-        req = urllib.request.Request(request_string,
-                                     data=urllib.parse.urlencode(values).encode("utf-8"),
-                                     headers={'User-Agent': 'Chrome'})
-        r = urllib.request.urlopen(req)
-
-        code = r.getcode()
-        if code == 200:
-            result_rev2_cct = json.loads(r.read().decode('utf-8'))
-        else:
-            print('Got incorrect code: {}'.format(code))
-            result_rev2_cct = []
-
-        # print(result_rev2_cct["locations"][0]['address'], result_rev2_cct["locations"][0]['location'])
-
-        cct_lat2, cct_lon2 = result_rev2_cct["locations"][0]['location']['y'], \
-                             result_rev2_cct["locations"][0]['location']['x']
-
-        # get distance between points
-        d_cct = ((float(cct_lat2) - float(cct_lat)) ** 2 + (float(cct_lon2) - float(cct_lon)) ** 2) ** 0.5
-        # print('distance: {}'.format(d_cct))
-        # print(d_cct)
-        cct_error = d_cct
-
-    except Exception as e:
-        # print("address {} failed".format(add))
-        cct_address = None
-        cct_loc = 'NaN'
-        cct_error = 'NaN'
-
-    return cct_address, cct_loc, cct_error
-
-
-def compare(address_ag, lat_ag, lon_ag, d_ag, address_n, lat_n, lon_n, d_n, add_id):
-    """
-    Compares outputs from ArcGIS and Nominatim and returns the most accurate result
-    """
-    try:
-        dist = [d_ag, d_n]
-        print(dist)
-        if d_ag == 0.0:
-            # print('use ArcGIS: {}'.format(address_ag))
-            print('use ArcGIS')
-            lat = lat_ag
-            lon = lon_ag
-            address_name = address_ag
-            error = d_ag
-
-        elif d_n == 0.0:
-            # print('use Nominatim: {}'.format(address_n))
-            print('use Nominatim')
-            lat = lat_n
-            lon = lon_n
-            address_name = address_n
-            error = d_n
-
-        elif d_ag == min(dist):
-            # print('use ArcGIS because min dist: {}'.format(address_ag))
-            print('use ArcGIS because min dist')
-            lat = lat_ag
-            lon = lon_ag
-            address_name = address_ag
-            error = d_ag
-
-        elif d_n == min(dist):
-            # print('use Nominatim because min dist: {}'.format(address_n))
-            print('use Nominatim because min dist')
-            lat = lat_n
-            lon = lon_n
-            address_name = address_n
-            error = d_n
-
-        else:
-            print('did not work on address ID: {}'.format(add_id))
-            lat = 'NaN'
-            lon = 'NaN'
-            address_name = None
-            error = 'NaN'
-
-        # print("address ID: {}, address: {}, lat: {}, lon: {}, error: {}, option: {}".format(add_ID, address_name,
-        # lat, lon, error, option))
-
-    except Exception as e:
-        print('did not work on address ID: {}'.format(add_id))
-        lat = 'NaN'
-        lon = 'NaN'
-        address_name = None
-        error = 'NaN'
-    return lat, lon, address_name, error
-
-
-def compare_all(address_G, lat_g, lon_g, d_g, address_ag, lat_ag, lon_ag, d_ag, address_n, lat_n, lon_n, d_n, add_id):
-    """
-    Compares outputs from Google, ArcGIS, and Nominatim and returns the most accurate result
-    """
-    try:
-        dist = [d_g, d_ag, d_n]
-        print(dist)
-
-        if d_g == 0.0:
-            # print('use google: {}'.format(address_G))
-            print('use google')
-            lat = lat_g
-            lon = lon_g
-            address_name = address_G
-            error = d_g
-
-        elif d_ag == 0.0:
-            # print('use ArcGIS: {}'.format(address_ag))
-            print('use ArcGIS')
-            lat = lat_ag
-            lon = lon_ag
-            address_name = address_ag
-            error = d_ag
-
-        elif d_n == 0.0:
-            # print('use Nominatim: {}'.format(address_n))
-            print('use Nominatim')
-            lat = lat_n
-            lon = lon_n
-            address_name = address_n
-            error = d_n
-
-        elif d_g == min(dist):
-            # print('use google because min dist: {}'.format(address_G))
-            print('use google because min dist')
-            lat = lat_g
-            lon = lon_g
-            address_name = address_G
-            error = d_g
-
-        elif d_ag == min(dist):
-            # print('use ArcGIS because min dist: {}'.format(address_ag))
-            print('use ArcGIS because min dist')
-            lat = lat_ag
-            lon = lon_ag
-            address_name = address_ag
-            error = d_ag
-
-        elif d_n == min(dist):
-            # print('use Nominatim because min dist: {}'.format(address_n))
-            print('use Nominatim because min dist')
-            lat = lat_n
-            lon = lon_n
-            address_name = address_n
-            error = d_n
-
-        else:
-            print('did not work on address ID: {}'.format(add_id))
-            lat = 'NaN'
-            lon = 'NaN'
-            address_name = None
-            error = 'NaN'
-
-    except Exception as e:
-        print('did not work on address ID: {}'.format(add_id))
-        lat = 'NaN'
-        lon = 'NaN'
-        address_name = None
-        error = 'NaN'
-
-    return lat, lon, address_name, error
+    return first_result[2], first_result[3], None, first_result[0]

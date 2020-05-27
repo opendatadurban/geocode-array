@@ -9,10 +9,15 @@ class Google(Geocoder):
     reverse_geocode_url = 'https://maps.googleapis.com/maps/api/geocode/json'
     geocode_url = reverse_geocode_url
 
-    def _form_reverse_geocode_request_args(self, lat, long, api_key) -> str:
+    def __init__(self, proxy_url=None, api_key=None, **kwargs):
+        super().__init__(proxy_url=proxy_url)
+        self.api_key = api_key
+
+
+    def _form_reverse_geocode_request_args(self, lat, long) -> str:
         values = {
             "latlng": f'{lat},{long}',
-            "key": api_key
+            "key": self.api_key
         }
         logging.debug(f"reverse geocode values={pprint.pformat(values)}")
 
@@ -29,10 +34,10 @@ class Google(Geocoder):
 
         return address
 
-    def _form_geocode_request_args(self, address, api_key) -> str:
+    def _form_geocode_request_args(self, address) -> str:
         values = {
             "address": address,
-            "key": api_key
+            "key": self.api_key
         }
         logging.debug(f"geocode values={pprint.pformat(values)}")
 

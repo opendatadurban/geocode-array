@@ -12,7 +12,8 @@ in json and csv format.
 import argparse
 import logging
 
-from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY, INTERNAL_KEY, EXTERNAL_KEY
+from geocode_array import ArcGIS, Nominatim, CCT, Google
+from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY
 
 parser = argparse.ArgumentParser(
     description="geocode using an array of Geocoders. Example: $ geocode-array  "
@@ -22,12 +23,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument("--input_filename", type=str, help="input filename eg: sample.csv")
 parser.add_argument("--output_filename", type=str, help="output filename eg: sample_output.csv",
                     default=STD_OUT)
+parser.add_argument("--proxy_url", type=str, help="Proxy URL eg: http://my_username:my_password@my_proxy/", required=False, default=None)
 parser.add_argument("--key_file", type=str, help="your Google API Key in a json file", default=None)
 parser.add_argument("--verbose", help="Turns on debug logging", action="store_true", default=False)
 args = parser.parse_args()
 
 input_filename = args.input_filename
 output_filename = args.output_filename
+proxy_url = args.proxy_url
 key_filename = args.key_file
 
 # Setting up logging
@@ -36,6 +39,24 @@ logging.basicConfig(level=log_level,
                     format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
 
 google_api_key = io_utils.get_api_key(key_filename) if key_filename is not None else None
+
+# Setting up geocoders
+geocoder_funcs = [
+    (gc.__name__, gc(proxy_url=proxy_url).geocode, gc(proxy_url=proxy_url).double_geocode)
+    for gc in (
+        ArcGIS.ArcGIS,
+        Nominatim.Nominatim,
+        CCT.CCT,
+    )
+]
+if google_api_key is not None:
+    geocoder_funcs += [
+        (Google.Google.__name__,
+         Google.Google(proxy_url=proxy_url, api_key=google_api_key).geocode,
+         Google.Google(proxy_url=proxy_url, api_key=google_api_key).double_geocode)
+    ]
+
+logging.info(f"Using the following Geocoders: {', '.join(map(lambda gcf: gcf[0], geocoder_funcs))}")
 
 inputs = tuple(io_utils.input_file_entries(input_filename))
 result = {}

@@ -13,8 +13,7 @@ import logging
 import os
 import pprint
 
-from geocode_array import JSON_EXT, CSV_EXT, STD_OUT, ADDRESS_ID_FIELD, ADDRESS_FIELD, RESULT_KEY, INTERNAL_KEY, \
-    EXTERNAL_KEY, API_KEY
+from geocode_array import JSON_EXT, CSV_EXT, STD_OUT, ADDRESS_ID_FIELD, ADDRESS_FIELD, RESULT_KEY, API_KEY
 
 DATA_READER_DICT = {
     JSON_EXT: lambda input_file: iter(json.load(input_file)),
@@ -31,9 +30,8 @@ def _csv_writer(data_file, data):
     first_entry, *_ = data.values()
     headers = [ADDRESS_ID_FIELD.lower()]
     headers += [
-        f"{prefix}_{key}"
-        for prefix in [INTERNAL_KEY, EXTERNAL_KEY]
-        for key in first_entry[RESULT_KEY][prefix].keys()
+        f"{key}"
+        for key in first_entry[RESULT_KEY].keys()
         if key != ADDRESS_ID_FIELD
     ]
     logging.debug(f"headers={', '.join(headers)}")
@@ -45,9 +43,8 @@ def _csv_writer(data_file, data):
         {
             ADDRESS_ID_FIELD.lower(): add_id,
             **{
-                f"{prefix}_{key}": value
-                for prefix in [INTERNAL_KEY, EXTERNAL_KEY]
-                for key, value in entry[RESULT_KEY][prefix].items()
+                f"{key}": value
+                for key, value in entry[RESULT_KEY].items()
                 if key != ADDRESS_ID_FIELD
             }
         }
