@@ -127,3 +127,6 @@ dmypy.json
 # PyCharm files
 .idea/
 /example
+
+# Secrets we don't want to include accidentally
+resources/google_key.json
