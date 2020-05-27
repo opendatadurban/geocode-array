@@ -83,16 +83,18 @@ def combine_results(result_tuples) -> (float or None, float or None, float or No
             logging.debug(f"Returning best combination of {c} results")
             return min_result
 
-    # OK, finding the single result with the lowest internal error
+    # Finding the single result with the lowest internal error
     min_result = min(result_tuples,
                      key=lambda result_tuple: (result_tuple[-1] if result_tuple[-1] is not None
                                                else DISPERSION_THRESHOLD))
+    if min_result[-1] is None or min_result[-1] >= DISPERSION_THRESHOLD:
+        # OK, just returning the first result
+        first_result, *_ = result_tuples
+        logging.debug("Just returning the first result")
+        return first_result[2], first_result[3], None, first_result[0]
+
     if min_result[-1] is not None and min_result[-1] < DISPERSION_THRESHOLD:
         logging.debug("Returning single best result")
         return min_result[2], min_result[3], min_result[-1], _get_geocoders([min_result])
 
-    # OK, just returning the first result
-    first_result, *_ = result_tuples
-    logging.debug("Just returning the first result")
 
-    return first_result[2], first_result[3], None, first_result[0]

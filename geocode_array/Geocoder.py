@@ -123,8 +123,12 @@ class Geocoder:
         coords = self._geocode(address_string, *extra_args)
         logging.debug(f"Geocod[ed] '{address_string}' -> '{coords}'")
 
-        lat, lon = coords
-        return address_string, lat, lon
+        if coords is not None:
+            lat, lon = coords
+        else:
+            lat, lon = None, None
+
+        return address_string, lat, lon, None
 
     def double_geocode(self, address_string, *extra_args) -> (str or None, float or None, float or None, float or None):
         """

@@ -66,7 +66,7 @@ for add_ID, addr in inputs:
     logging.info("Geocod[ing]...")
     result_tuples = [
         (geocoder_class, *geocoder(addr))
-        for geocoder_class, _, geocoder in geocoder_funcs
+        for geocoder_class, geocoder, _ in geocoder_funcs
     ]
     logging.info("...Geocod[ed]")
     logging.debug(f"result_tuples={result_tuples}")
