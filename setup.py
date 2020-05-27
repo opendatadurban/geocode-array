@@ -4,6 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
+    name="geocode-array",
     version="0.1.0",
     author=["Matthew Adendorff", "Heiko Heilgendorff"],
     author_email="matthew@opencitieslab.org>",
