@@ -87,7 +87,7 @@ def combine_results(result_tuples) -> (float or None, float or None, float or No
     min_result = min(result_tuples,
                      key=lambda result_tuple: (result_tuple[-1] if result_tuple[-1] is not None
                                                else DISPERSION_THRESHOLD))
-    if min_result[-1] < DISPERSION_THRESHOLD:
+    if min_result[-1] is not None and min_result[-1] < DISPERSION_THRESHOLD:
         logging.debug("Returning single best result")
         return min_result[2], min_result[3], min_result[-1], _get_geocoders([min_result])
 
