@@ -64,7 +64,7 @@ def _find_dist_mean(lat_mean, lon_mean, result_tuples) -> float:
     return dist_sum / tuple_len
 
 
-def combine_results(result_tuples) -> (float or None, float or None, float or None, [str] or None):
+def combine_results(result_tuples, dispersion_threshold=DISPERSION_THRESHOLD) -> (float or None, float or None, float or None, [str] or None):
     """
     Compares outputs from various geocoders. Assumes that there are no null values
 
@@ -81,7 +81,7 @@ def combine_results(result_tuples) -> (float or None, float or None, float or No
     lat_mean, lon_mean = _find_mean_pos(result_tuples)
     dispersion = _find_dist_mean(lat_mean, lon_mean, result_tuples)
 
-    if dispersion < DISPERSION_THRESHOLD:
+    if dispersion < dispersion_threshold:
         logging.debug("Returning mean of all results")
         return lat_mean, lon_mean, dispersion, _get_geocoders(result_tuples)
 
@@ -100,21 +100,22 @@ def combine_results(result_tuples) -> (float or None, float or None, float or No
 
         min_result = min(perm_results,
                          key=lambda perm_result: perm_result[-2])
-        if min_result[-2] < DISPERSION_THRESHOLD:
+        if min_result[-2] < dispersion_threshold:
             logging.debug(f"Returning best combination of {c} results")
             return min_result
 
     # Finding the single result with the lowest internal error
     min_result = min(result_tuples,
                      key=lambda result_tuple: (result_tuple[-1] if result_tuple[-1] is not None
-                                               else DISPERSION_THRESHOLD))
-    if min_result[-1] is None or min_result[-1] >= DISPERSION_THRESHOLD:
+                                               else dispersion_threshold))
+
+    if min_result[-1] is None or min_result[-1] >= dispersion_threshold:
         # OK, just returning the first result
         first_result, *_ = result_tuples
         logging.debug("Just returning the first result")
         return first_result[2], first_result[3], None, [first_result[0]]
 
-    elif min_result[-1] is not None and min_result[-1] < DISPERSION_THRESHOLD:
+    elif min_result[-1] is not None and min_result[-1] < dispersion_threshold:
         logging.debug("Returning single best result")
         return min_result[2], min_result[3], min_result[-1], _get_geocoders([min_result])
 
