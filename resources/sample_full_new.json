@@ -1,0 +1,1134 @@
+[
+  {
+    "Address_ID": 0,
+    "Address_Cleaned": "Main & Fagen Rd Strand"
+  },
+  {
+    "Address_ID": 1,
+    "Address_Cleaned": "Ntlakohlaza & Ntlazane Str"
+  },
+  {
+    "Address_ID": 2,
+    "Address_Cleaned": "Makabeni Rd Khayelitsha"
+  },
+  {
+    "Address_ID": 3,
+    "Address_Cleaned": "Eisleben Drive & Silversands Avenue Westridge Mitchells Plain"
+  },
+  {
+    "Address_ID": 4,
+    "Address_Cleaned": "Victoria & Andries Pretorius Rd"
+  },
+  {
+    "Address_ID": 5,
+    "Address_Cleaned": "260A Van Der Heever Street TygerdalGoodwood"
+  },
+  {
+    "Address_ID": 6,
+    "Address_Cleaned": "2 Atlantic Road Muizenberg Depot Muizenberg"
+  },
+  {
+    "Address_ID": 7,
+    "Address_Cleaned": "Off Jan Smuts Athlone"
+  },
+  {
+    "Address_ID": 8,
+    "Address_Cleaned": "Landsdown Rd & Ny 1 Gugulethu"
+  },
+  {
+    "Address_ID": 9,
+    "Address_Cleaned": "Spyker Street  Somerset West"
+  },
+  {
+    "Address_ID": 10,
+    "Address_Cleaned": "Downberg Rd Hanover Park Athlone"
+  },
+  {
+    "Address_ID": 11,
+    "Address_Cleaned": "Hardekraaltjie Bellville -Waterworks"
+  },
+  {
+    "Address_ID": 12,
+    "Address_Cleaned": "Town Centre Mitchells Plain"
+  },
+  {
+    "Address_ID": 13,
+    "Address_Cleaned": "Kendal Road Constantia"
+  },
+  {
+    "Address_ID": 14,
+    "Address_Cleaned": "Baden Powel Rd Muizenberg"
+  },
+  {
+    "Address_ID": 15,
+    "Address_Cleaned": "Aden Rd Athlone (ground floor)"
+  },
+  {
+    "Address_ID": 16,
+    "Address_Cleaned": "2 Kendal Road Constantia"
+  },
+  {
+    "Address_ID": 17,
+    "Address_Cleaned": "Neil Hare Road Industrial Area"
+  },
+  {
+    "Address_ID": 18,
+    "Address_Cleaned": "Van Riebeeck Rd Klsrvr"
+  },
+  {
+    "Address_ID": 19,
+    "Address_Cleaned": "Strand Street Concourse Strand Street & Adderley Street"
+  },
+  {
+    "Address_ID": 20,
+    "Address_Cleaned": "Milnerton -opposite refinery"
+  },
+  {
+    "Address_ID": 21,
+    "Address_Cleaned": "Schaapkraal Rd & Vlei Rd Philippi Agricultural Area 7945"
+  },
+  {
+    "Address_ID": 22,
+    "Address_Cleaned": "of Klipfontein Rd & Saturn Rd Rd Surrey Estate"
+  },
+  {
+    "Address_ID": 23,
+    "Address_Cleaned": "1st Avenue & Botfontein Rd"
+  },
+  {
+    "Address_ID": 24,
+    "Address_Cleaned": "Melton Rose "
+  },
+  {
+    "Address_ID": 25,
+    "Address_Cleaned": "N7 FranksDale Road Vissershok"
+  },
+  {
+    "Address_ID": 26,
+    "Address_Cleaned": "Koeberg & Blaauwberg Rd Killarney"
+  },
+  {
+    "Address_ID": 27,
+    "Address_Cleaned": "Roads & Stormw. (Sacks Circle)"
+  },
+  {
+    "Address_ID": 28,
+    "Address_Cleaned": "Koeberg and Blouberg Road Milnerton"
+  },
+  {
+    "Address_ID": 29,
+    "Address_Cleaned": "Niel Hare Road Atlantis"
+  },
+  {
+    "Address_ID": 30,
+    "Address_Cleaned": "Adam Tas & Stellebosch Arterial"
+  },
+  {
+    "Address_ID": 31,
+    "Address_Cleaned": "Koeberg Road Next to Killarney Hotel"
+  },
+  {
+    "Address_ID": 32,
+    "Address_Cleaned": "47 Loerie Road Bridgetown Athlone"
+  },
+  {
+    "Address_ID": 33,
+    "Address_Cleaned": " Dagbreek & Morgenster Rd"
+  },
+  {
+    "Address_ID": 34,
+    "Address_Cleaned": "Fabriek Rd Eindhoven Delft"
+  },
+  {
+    "Address_ID": 35,
+    "Address_Cleaned": "Viking & Vanguard Drive Epping"
+  },
+  {
+    "Address_ID": 36,
+    "Address_Cleaned": "Ntlakohlaza & Ntlazane Streets Khayelitsha"
+  },
+  {
+    "Address_ID": 37,
+    "Address_Cleaned": "Ridderspoor & Krisante Str Tygervalley"
+  },
+  {
+    "Address_ID": 38,
+    "Address_Cleaned": "de la Rey & Voortrekker Rd"
+  },
+  {
+    "Address_ID": 39,
+    "Address_Cleaned": "Bloemhof Road Bloemhof Belville 7530"
+  },
+  {
+    "Address_ID": 40,
+    "Address_Cleaned": "10 Pretorius Street Strand 7700"
+  },
+  {
+    "Address_ID": 41,
+    "Address_Cleaned": "Dassenber Rd Atlantis"
+  },
+  {
+    "Address_ID": 42,
+    "Address_Cleaned": "Central Circle Fish Hoek"
+  },
+  {
+    "Address_ID": 43,
+    "Address_Cleaned": "Brackenfell Kruispad (next to Traffic Dept) Brackenfell "
+  },
+  {
+    "Address_ID": 44,
+    "Address_Cleaned": "Roads Depot Lord's Walk Durbanville"
+  },
+  {
+    "Address_ID": 45,
+    "Address_Cleaned": "Charel Uys Rylaan Atlantis"
+  },
+  {
+    "Address_ID": 46,
+    "Address_Cleaned": "R44 Hermon to Gouda"
+  },
+  {
+    "Address_ID": 47,
+    "Address_Cleaned": "The Row Zandvlei"
+  },
+  {
+    "Address_ID": 48,
+    "Address_Cleaned": "Killarney Worksyard  Killarney  Milnerton"
+  },
+  {
+    "Address_ID": 49,
+    "Address_Cleaned": "Sir Lowry's Pass Road Gordons Bay"
+  },
+  {
+    "Address_ID": 50,
+    "Address_Cleaned": "Carel van Aswegen Straat Bellville"
+  },
+  {
+    "Address_ID": 51,
+    "Address_Cleaned": "Kruispad Depot . Brakenfell. Oosteberg Electrical Depot"
+  },
+  {
+    "Address_ID": 52,
+    "Address_Cleaned": "Hazeldene Rd PortlandsMplain"
+  },
+  {
+    "Address_ID": 53,
+    "Address_Cleaned": "Kwahlaza Road Makaza Khayelitsha"
+  },
+  {
+    "Address_ID": 54,
+    "Address_Cleaned": "Solomon Tshuku Road Site C Khayelitsha"
+  },
+  {
+    "Address_ID": 55,
+    "Address_Cleaned": "Merridale Rd Lentegeur Mitchells Plain"
+  },
+  {
+    "Address_ID": 56,
+    "Address_Cleaned": "Sacks circle Rd & Rotterdam Rd Bellville South "
+  },
+  {
+    "Address_ID": 57,
+    "Address_Cleaned": "Fabriek Street Kuils River "
+  },
+  {
+    "Address_ID": 58,
+    "Address_Cleaned": "\u00a0Maroela & Sandringham Road \u00a0Kraaifontein"
+  },
+  {
+    "Address_ID": 59,
+    "Address_Cleaned": "Parklands Rd Scottsdene"
+  },
+  {
+    "Address_ID": 60,
+    "Address_Cleaned": "112 Edward Street Bloemhof "
+  },
+  {
+    "Address_ID": 61,
+    "Address_Cleaned": "Washington & Leroti Rd"
+  },
+  {
+    "Address_ID": 62,
+    "Address_Cleaned": "Fritz Sonnenberg Groenpunt"
+  },
+  {
+    "Address_ID": 63,
+    "Address_Cleaned": "Halt Rd & 34th Avenue Elsies River"
+  },
+  {
+    "Address_ID": 64,
+    "Address_Cleaned": "Kilimanjaro Rd & Pyrenees St Tafelsig"
+  },
+  {
+    "Address_ID": 65,
+    "Address_Cleaned": "Parow Fire Station Alexandra & Steenbras"
+  },
+  {
+    "Address_ID": 66,
+    "Address_Cleaned": "Phoenix House 4 Glen Roy Road Pinelands"
+  },
+  {
+    "Address_ID": 67,
+    "Address_Cleaned": "Main Street & Boyce Street Delft"
+  },
+  {
+    "Address_ID": 68,
+    "Address_Cleaned": "Bhunga Ave- off Service Road Langa"
+  },
+  {
+    "Address_ID": 69,
+    "Address_Cleaned": "Sithandathu Avenue Nyanga"
+  },
+  {
+    "Address_ID": 70,
+    "Address_Cleaned": "Old SPCA building Jan Smuts Ave Beaconvale Parow Industria"
+  },
+  {
+    "Address_ID": 71,
+    "Address_Cleaned": "Civic Center Complex Cape Town"
+  },
+  {
+    "Address_ID": 72,
+    "Address_Cleaned": "Melkbos Rd & Merrydale Rd Lentegeur Mitchells Plain"
+  },
+  {
+    "Address_ID": 73,
+    "Address_Cleaned": "Melck Street Ground Floor Ndabeni"
+  },
+  {
+    "Address_ID": 74,
+    "Address_Cleaned": "Linda & Olga Roads Grassy Park"
+  },
+  {
+    "Address_ID": 75,
+    "Address_Cleaned": "Oliver Tambo & Leonard Radu Drive Weltevreden Valley"
+  },
+  {
+    "Address_ID": 76,
+    "Address_Cleaned": "Avondrust Circle Noordhoek7975"
+  },
+  {
+    "Address_ID": 77,
+    "Address_Cleaned": "Nqubelani & Umbashe Street Extension 6 Mfuleni"
+  },
+  {
+    "Address_ID": 78,
+    "Address_Cleaned": "Hindle Road Blue Downs -Indoor Pool"
+  },
+  {
+    "Address_ID": 79,
+    "Address_Cleaned": "Albert Philander Rd Melton Rose"
+  },
+  {
+    "Address_ID": 80,
+    "Address_Cleaned": "Spyker Street SS West"
+  },
+  {
+    "Address_ID": 81,
+    "Address_Cleaned": "Nature Conservation Weltevreden Council Depot Rocklands Mitchells Plain"
+  },
+  {
+    "Address_ID": 82,
+    "Address_Cleaned": "1 Christopher Starcke Rd Atlantis Industria"
+  },
+  {
+    "Address_ID": 83,
+    "Address_Cleaned": "NY1   & LANSDOWN  RD"
+  },
+  {
+    "Address_ID": 84,
+    "Address_Cleaned": "Parks & Baths Building Merrydale Avenue LENTEGEUR"
+  },
+  {
+    "Address_ID": 85,
+    "Address_Cleaned": "Charel Uys Drive and Ivan Hampshire Road Atlantis"
+  },
+  {
+    "Address_ID": 86,
+    "Address_Cleaned": "Solomon Tshuku drive -next to the Site C Plaza shopping Mall"
+  },
+  {
+    "Address_ID": 87,
+    "Address_Cleaned": "19 Spyker Street SS West"
+  },
+  {
+    "Address_ID": 88,
+    "Address_Cleaned": "Hlela Road Makaza Khayelitsha"
+  },
+  {
+    "Address_ID": 89,
+    "Address_Cleaned": "Goodwood Traffic Services Hugo Street Operations Goodwood"
+  },
+  {
+    "Address_ID": 90,
+    "Address_Cleaned": "Landsdown Rd & NY1 Gugulethu "
+  },
+  {
+    "Address_ID": 91,
+    "Address_Cleaned": "McIntyre Street Goodwood"
+  },
+  {
+    "Address_ID": 92,
+    "Address_Cleaned": "De Bron Rd Vredekloof Brackenfell"
+  },
+  {
+    "Address_ID": 93,
+    "Address_Cleaned": "Table Bay Mall Shop G404 Table Bay Mall Cnr R27 West Coast Road & Berkshire Boulevard Sunningdale"
+  },
+  {
+    "Address_ID": 94,
+    "Address_Cleaned": "Wye Road Manenberg  "
+  },
+  {
+    "Address_ID": 95,
+    "Address_Cleaned": "Zolani & Bonga Rd"
+  },
+  {
+    "Address_ID": 96,
+    "Address_Cleaned": "Nokasela Avenue Kraaifontein"
+  },
+  {
+    "Address_ID": 97,
+    "Address_Cleaned": "Kruisfontein Rd Brackenfell"
+  },
+  {
+    "Address_ID": 98,
+    "Address_Cleaned": "Makabeni Rd & Zakhele Rd Khayelitsha"
+  },
+  {
+    "Address_ID": 99,
+    "Address_Cleaned": "Durbanville"
+  },
+  {
+    "Address_ID": 100,
+    "Address_Cleaned": "Thanga Street Cape Town"
+  },
+  {
+    "Address_ID": 101,
+    "Address_Cleaned": "Katdoring & 5th Ave Eastridge Mitchells Plain"
+  },
+  {
+    "Address_ID": 102,
+    "Address_Cleaned": "2nd  floor Harbour Place Martin Hammerschlag Way Foreshore Cape Town"
+  },
+  {
+    "Address_ID": 103,
+    "Address_Cleaned": "12 A/B Voortrekkerweg Hardekraaltjie (Bellville)"
+  },
+  {
+    "Address_ID": 104,
+    "Address_Cleaned": "Grosvener Ave & Gothenburg Cres Atlantis"
+  },
+  {
+    "Address_ID": 105,
+    "Address_Cleaned": "Stock Rd & Market Rd Phillipi"
+  },
+  {
+    "Address_ID": 106,
+    "Address_Cleaned": "Old Strandfontein & New Ottery Rd Ottery"
+  },
+  {
+    "Address_ID": 107,
+    "Address_Cleaned": "Spyker Street  Sommerst West. Electrical Depot"
+  },
+  {
+    "Address_ID": 108,
+    "Address_Cleaned": "Walter Sisulu road  Kuyasa Khayelitsha"
+  },
+  {
+    "Address_ID": 109,
+    "Address_Cleaned": "Andries Pretorius & Victoria Street SSWest"
+  },
+  {
+    "Address_ID": 110,
+    "Address_Cleaned": "Steenhoven Street (by the Police Station)  Bothasig"
+  },
+  {
+    "Address_ID": 111,
+    "Address_Cleaned": "Plattekloof Reservoir"
+  },
+  {
+    "Address_ID": 112,
+    "Address_Cleaned": "Bertie Genade Road DeGrendal Parow"
+  },
+  {
+    "Address_ID": 113,
+    "Address_Cleaned": "Off Section Str Paarden Eiland/Brooklyn"
+  },
+  {
+    "Address_ID": 114,
+    "Address_Cleaned": "4th floor Harbour Place Martin Hammerschlag Way Foreshore Cape Town"
+  },
+  {
+    "Address_ID": 115,
+    "Address_Cleaned": "Faure Marine "
+  },
+  {
+    "Address_ID": 116,
+    "Address_Cleaned": "Birkenhead Drive off Otto du Plessis Drive Melkbos"
+  },
+  {
+    "Address_ID": 117,
+    "Address_Cleaned": "House 2Cape Town to Newlands Reservoir"
+  },
+  {
+    "Address_ID": 118,
+    "Address_Cleaned": "Eland Street Athlone"
+  },
+  {
+    "Address_ID": 119,
+    "Address_Cleaned": "14 Clovelly road Fish Hoek"
+  },
+  {
+    "Address_ID": 120,
+    "Address_Cleaned": "1 Hantem Drive Big Bay"
+  },
+  {
+    "Address_ID": 121,
+    "Address_Cleaned": "Stock Rd next to Police Station Philippi East"
+  },
+  {
+    "Address_ID": 122,
+    "Address_Cleaned": "Neil Hare Rd Council Yard Atlantis"
+  },
+  {
+    "Address_ID": 123,
+    "Address_Cleaned": "AW Kempton Bldg Bellrail Street Bellville"
+  },
+  {
+    "Address_ID": 124,
+    "Address_Cleaned": "Botfontein Weg  Scottsdene\u00a0Kraaifontein."
+  },
+  {
+    "Address_ID": 125,
+    "Address_Cleaned": NaN
+  },
+  {
+    "Address_ID": 126,
+    "Address_Cleaned": "Giel Basson & Frans Conradie Dr Parow "
+  },
+  {
+    "Address_ID": 127,
+    "Address_Cleaned": "Silversands Road Main Road Wesbank"
+  },
+  {
+    "Address_ID": 128,
+    "Address_Cleaned": "Hoheizen Str Bellville -Old Nursery"
+  },
+  {
+    "Address_ID": 129,
+    "Address_Cleaned": "Goodwood Fire Station"
+  },
+  {
+    "Address_ID": 130,
+    "Address_Cleaned": "Lansdowne & NY78 Nyloko Rd Guguletu"
+  },
+  {
+    "Address_ID": 131,
+    "Address_Cleaned": "Eisleben Drive & Silversands Avenue Westridge Mitchells Plain "
+  },
+  {
+    "Address_ID": 132,
+    "Address_Cleaned": "6th  floor Harbour Place Martin Hammerschlag Way Foreshore Cape Town"
+  },
+  {
+    "Address_ID": 133,
+    "Address_Cleaned": "Central Avenue Fish Hoek Drivers Licensing Testing Centre Fish Hoek"
+  },
+  {
+    "Address_ID": 134,
+    "Address_Cleaned": "Perkins Street\u00a0 Atlantis  "
+  },
+  {
+    "Address_ID": 135,
+    "Address_Cleaned": "44 Clarence Drive Gordon's Bay"
+  },
+  {
+    "Address_ID": 136,
+    "Address_Cleaned": "59 Palmboom Rd Rondebosch"
+  },
+  {
+    "Address_ID": 137,
+    "Address_Cleaned": "Westpoort & Simonsig Avenue Westridge Mitchells Plain"
+  },
+  {
+    "Address_ID": 138,
+    "Address_Cleaned": "Van Riebeeck Road Kuilsrivier 7580"
+  },
+  {
+    "Address_ID": 139,
+    "Address_Cleaned": "Dobson & Klipfontein Rd Athlone"
+  },
+  {
+    "Address_ID": 140,
+    "Address_Cleaned": "23 Klobber Street Parow"
+  },
+  {
+    "Address_ID": 141,
+    "Address_Cleaned": "Silverboom St Plattekloof"
+  },
+  {
+    "Address_ID": 142,
+    "Address_Cleaned": "13 Melck Street Ndabeni Complex"
+  },
+  {
+    "Address_ID": 143,
+    "Address_Cleaned": "Park Avenue & Lancaster Rd Rocklands"
+  },
+  {
+    "Address_ID": 144,
+    "Address_Cleaned": "Skina & Mayeza Rd Sun Valley"
+  },
+  {
+    "Address_ID": 145,
+    "Address_Cleaned": "7 Zeekoevlei Rd Zeekoevlei"
+  },
+  {
+    "Address_ID": 146,
+    "Address_Cleaned": "Tafelberg Rd Tamboerskloof"
+  },
+  {
+    "Address_ID": 147,
+    "Address_Cleaned": "Eaon Avenue Scottsdene"
+  },
+  {
+    "Address_ID": 148,
+    "Address_Cleaned": "5th Floor Podium Capital Program"
+  },
+  {
+    "Address_ID": 149,
+    "Address_Cleaned": "Mzamka and A Siwa Rd KTC Nyanga"
+  },
+  {
+    "Address_ID": 150,
+    "Address_Cleaned": " Oasis & Ramone street"
+  },
+  {
+    "Address_ID": 151,
+    "Address_Cleaned": "Bentley Road Blue Downs"
+  },
+  {
+    "Address_ID": 152,
+    "Address_Cleaned": "Fundana Road Makaza Khayelitsha"
+  },
+  {
+    "Address_ID": 153,
+    "Address_Cleaned": "Roads Depot Socony Road Goodwood"
+  },
+  {
+    "Address_ID": 154,
+    "Address_Cleaned": "Darling & Felicia Streets (Off Bill Bezuidenhout) Chrismar"
+  },
+  {
+    "Address_ID": 155,
+    "Address_Cleaned": "Fire- Ottery"
+  },
+  {
+    "Address_ID": 156,
+    "Address_Cleaned": "Service Rd off Bhunga Avenue"
+  },
+  {
+    "Address_ID": 157,
+    "Address_Cleaned": "Off Constantia Nek Rd"
+  },
+  {
+    "Address_ID": 158,
+    "Address_Cleaned": "Petunia Street Silvertown Athlone"
+  },
+  {
+    "Address_ID": 159,
+    "Address_Cleaned": "40th Avenue Clarke's Estate"
+  },
+  {
+    "Address_ID": 160,
+    "Address_Cleaned": "NY 49 Street Gugulethu"
+  },
+  {
+    "Address_ID": 161,
+    "Address_Cleaned": "53 Osborne road Bellville south"
+  },
+  {
+    "Address_ID": 162,
+    "Address_Cleaned": "Makabeni StreetResource Centre Khayelitsha"
+  },
+  {
+    "Address_ID": 163,
+    "Address_Cleaned": "Spine & Lwandle Rd Khayelitsha"
+  },
+  {
+    "Address_ID": 164,
+    "Address_Cleaned": "Zakhele Road Khayelitsha"
+  },
+  {
+    "Address_ID": 165,
+    "Address_Cleaned": "Kiewiet & Klip Road Lotus River"
+  },
+  {
+    "Address_ID": 166,
+    "Address_Cleaned": "12th Avenue Leonsdale"
+  },
+  {
+    "Address_ID": 167,
+    "Address_Cleaned": "Huguenot Way & Alabama Dr"
+  },
+  {
+    "Address_ID": 168,
+    "Address_Cleaned": "Tygerbeg and Bothasig Fynbos Nature Reserve"
+  },
+  {
+    "Address_ID": 169,
+    "Address_Cleaned": "Kool & Ganna Street Melton Rose/Library DO"
+  },
+  {
+    "Address_ID": 170,
+    "Address_Cleaned": "114 Edward Street Bloemhof "
+  },
+  {
+    "Address_ID": 171,
+    "Address_Cleaned": "42 Ncumo street Harare Square Harare  Khayelitsha"
+  },
+  {
+    "Address_ID": 172,
+    "Address_Cleaned": "Delft & Voorbrug Rd Delft"
+  },
+  {
+    "Address_ID": 173,
+    "Address_Cleaned": "Ou Kaapse Weg Muizenberg"
+  },
+  {
+    "Address_ID": 174,
+    "Address_Cleaned": "Reservoir Street Brackenfell"
+  },
+  {
+    "Address_ID": 175,
+    "Address_Cleaned": "Eoan Avenue Scottsdene\u00a0 "
+  },
+  {
+    "Address_ID": 176,
+    "Address_Cleaned": "Lansdowne Rd & Church St Lansdowne"
+  },
+  {
+    "Address_ID": 177,
+    "Address_Cleaned": "Viking & Jakes Gerwel Drive Epping"
+  },
+  {
+    "Address_ID": 178,
+    "Address_Cleaned": "Hillstar Complex off Bamboesvlei Road Wetton"
+  },
+  {
+    "Address_ID": 179,
+    "Address_Cleaned": "Laidlaw & Keurboom Rd  Newland "
+  },
+  {
+    "Address_ID": 180,
+    "Address_Cleaned": "1 Petunia Road Silvertown Athlone"
+  },
+  {
+    "Address_ID": 181,
+    "Address_Cleaned": "Southdale Street Edgemead"
+  },
+  {
+    "Address_ID": 182,
+    "Address_Cleaned": "74 Grindle Crescent Lavender Hill"
+  },
+  {
+    "Address_ID": 183,
+    "Address_Cleaned": "Goodwood Municipal Court Cnr Frans Conradie & Hugo Streets Goodwood"
+  },
+  {
+    "Address_ID": 184,
+    "Address_Cleaned": "Delft & Voorbrug Road Delft"
+  },
+  {
+    "Address_ID": 185,
+    "Address_Cleaned": "New Ottery & Strandfontein Rd Ottery"
+  },
+  {
+    "Address_ID": 186,
+    "Address_Cleaned": "Spyker Street Somerset West 7140"
+  },
+  {
+    "Address_ID": 187,
+    "Address_Cleaned": "Schaapkraal Road Philippi Horticultural Area"
+  },
+  {
+    "Address_ID": 188,
+    "Address_Cleaned": "Block H Bloemhof Depot Bellville"
+  },
+  {
+    "Address_ID": 189,
+    "Address_Cleaned": "Sulani Drive Site B Khayelitsha"
+  },
+  {
+    "Address_ID": 190,
+    "Address_Cleaned": "Klipfontein Road Crossroads"
+  },
+  {
+    "Address_ID": 191,
+    "Address_Cleaned": "Retreat"
+  },
+  {
+    "Address_ID": 192,
+    "Address_Cleaned": "Protea St & Eland St Athlone "
+  },
+  {
+    "Address_ID": 193,
+    "Address_Cleaned": "2 Waxberry Close Dunoon 7441"
+  },
+  {
+    "Address_ID": 194,
+    "Address_Cleaned": "11th & Factreton Avenue Factreton"
+  },
+  {
+    "Address_ID": 195,
+    "Address_Cleaned": "Belhar Drive & Huguenot Road Belhar"
+  },
+  {
+    "Address_ID": 196,
+    "Address_Cleaned": "Lwandle & Phendula Crescent Khayelitsha"
+  },
+  {
+    "Address_ID": 197,
+    "Address_Cleaned": "Nolan Street & Brinkhuis Street Sir Lowry's Pass"
+  },
+  {
+    "Address_ID": 198,
+    "Address_Cleaned": "Cekeca Street Makhaza Khayelitsha"
+  },
+  {
+    "Address_ID": 199,
+    "Address_Cleaned": "Maynard Road\u00a0 Wynberg"
+  },
+  {
+    "Address_ID": 200,
+    "Address_Cleaned": "Victoria & Casino Rd Southfield"
+  },
+  {
+    "Address_ID": 201,
+    "Address_Cleaned": "Jakkalsvlei & Bonteheuwel Avenue Bonteheuwel"
+  },
+  {
+    "Address_ID": 202,
+    "Address_Cleaned": "Kroonhoop Str. Westridge Mitchells Plain"
+  },
+  {
+    "Address_ID": 203,
+    "Address_Cleaned": "Tungwana Road Site C Khayelitsha"
+  },
+  {
+    "Address_ID": 204,
+    "Address_Cleaned": "Proton Rd Belhar"
+  },
+  {
+    "Address_ID": 205,
+    "Address_Cleaned": "Van Riebeecks Way Kraaifontein"
+  },
+  {
+    "Address_ID": 206,
+    "Address_Cleaned": "West Coast Road (R27); Melkbosstrand (before Koeberg Nuclear PS)"
+  },
+  {
+    "Address_ID": 207,
+    "Address_Cleaned": "Eaon Way Scottsdene"
+  },
+  {
+    "Address_ID": 208,
+    "Address_Cleaned": "Melton Rose Dept"
+  },
+  {
+    "Address_ID": 209,
+    "Address_Cleaned": "Indulent crescentLandsdowne Industria"
+  },
+  {
+    "Address_ID": 210,
+    "Address_Cleaned": "Albert Philander str Kleinvlei Melton Rose Kleinvlei"
+  },
+  {
+    "Address_ID": 211,
+    "Address_Cleaned": "Bonga Drive Khayelitsha"
+  },
+  {
+    "Address_ID": 212,
+    "Address_Cleaned": "Phumlani avenue & Ngqabe Rd Philippi East"
+  },
+  {
+    "Address_ID": 213,
+    "Address_Cleaned": "Mew-way & Lansdowne Rd Khayelitsha"
+  },
+  {
+    "Address_ID": 214,
+    "Address_Cleaned": "Watt Street Gordon's Bay"
+  },
+  {
+    "Address_ID": 215,
+    "Address_Cleaned": "Lower Level Tygervalley Centre Bellville"
+  },
+  {
+    "Address_ID": 216,
+    "Address_Cleaned": "New Ottery Rd"
+  },
+  {
+    "Address_ID": 217,
+    "Address_Cleaned": "Merchant Walk Duynefontein Melkbosstrand"
+  },
+  {
+    "Address_ID": 218,
+    "Address_Cleaned": "Ntlazana Street Khayelitsha"
+  },
+  {
+    "Address_ID": 219,
+    "Address_Cleaned": "Town Hall Halt Road Rondebosch"
+  },
+  {
+    "Address_ID": 220,
+    "Address_Cleaned": "Hickory Road Athlone"
+  },
+  {
+    "Address_ID": 221,
+    "Address_Cleaned": "Faure Marine Drive Strand"
+  },
+  {
+    "Address_ID": 222,
+    "Address_Cleaned": "Town Hall Clyde & Aberdeen Rd Woodstock"
+  },
+  {
+    "Address_ID": 223,
+    "Address_Cleaned": "3 Boston Circle Airport Industria "
+  },
+  {
+    "Address_ID": 224,
+    "Address_Cleaned": "Church Street &  Lansdowne Rd Lansdowne"
+  },
+  {
+    "Address_ID": 225,
+    "Address_Cleaned": "Bruce & Edwards Roads Ottery"
+  },
+  {
+    "Address_ID": 226,
+    "Address_Cleaned": "Racecourse Rd Durbanville"
+  },
+  {
+    "Address_ID": 227,
+    "Address_Cleaned": "Malmesbury Rd & Akademie Str"
+  },
+  {
+    "Address_ID": 228,
+    "Address_Cleaned": "Derry Street & Gladiolus Avenue Vredehoek"
+  },
+  {
+    "Address_ID": 229,
+    "Address_Cleaned": "Kommetjie Road Sunnydale Kommetjie"
+  },
+  {
+    "Address_ID": 230,
+    "Address_Cleaned": "Dullah Omar & Peter Mokabe Street Fisantekraal "
+  },
+  {
+    "Address_ID": 231,
+    "Address_Cleaned": "Westpoort Road Mitchells Plain"
+  },
+  {
+    "Address_ID": 232,
+    "Address_Cleaned": "Fishermans & Perth Rd Grassy Park"
+  },
+  {
+    "Address_ID": 233,
+    "Address_Cleaned": "Bristol Road Ingulube Rd Phillipi West"
+  },
+  {
+    "Address_ID": 234,
+    "Address_Cleaned": "Brackenfell Health Care Centre"
+  },
+  {
+    "Address_ID": 235,
+    "Address_Cleaned": "Bay View Rd Hout Bay Harbour"
+  },
+  {
+    "Address_ID": 236,
+    "Address_Cleaned": "Melkbos Rd & Merrydale Rd Lentegeur Mitchells Plain"
+  },
+  {
+    "Address_ID": 237,
+    "Address_Cleaned": "Charel Uys & Ivan Hampshire roads Atlantis."
+  },
+  {
+    "Address_ID": 238,
+    "Address_Cleaned": "Electricity Dept Rosmead Ave Wynberg"
+  },
+  {
+    "Address_ID": 239,
+    "Address_Cleaned": "Dapper Street off 12th Ave off Voortrekker Rd Kensington"
+  },
+  {
+    "Address_ID": 240,
+    "Address_Cleaned": "Cekeca Street Makhaza Khayelitsha"
+  },
+  {
+    "Address_ID": 241,
+    "Address_Cleaned": "Mountainside Boulevard & Sir Lowry Rd Gordons Bay"
+  },
+  {
+    "Address_ID": 242,
+    "Address_Cleaned": "Kool and Gannas Streets- Sports Recreation & Amenities: District 6"
+  },
+  {
+    "Address_ID": 243,
+    "Address_Cleaned": "59 Palmboom Road Rondebosch"
+  },
+  {
+    "Address_ID": 244,
+    "Address_Cleaned": "old strandfontein road & Ottery road"
+  },
+  {
+    "Address_ID": 245,
+    "Address_Cleaned": "1572 Motopeng Street Masiphumelele"
+  },
+  {
+    "Address_ID": 246,
+    "Address_Cleaned": "Waxberry Road Du Noon"
+  },
+  {
+    "Address_ID": 247,
+    "Address_Cleaned": "122B Kloof Street Tamboerskloof"
+  },
+  {
+    "Address_ID": 248,
+    "Address_Cleaned": "Christopher Starke Street Atlantis"
+  },
+  {
+    "Address_ID": 249,
+    "Address_Cleaned": "Fabriek Road Delft"
+  },
+  {
+    "Address_ID": 250,
+    "Address_Cleaned": "Kruisfontein road Brackenfell (next to Traffic)"
+  },
+  {
+    "Address_ID": 251,
+    "Address_Cleaned": "Berkley & Alexandra Rd Maitland"
+  },
+  {
+    "Address_ID": 252,
+    "Address_Cleaned": "Intsikizi Street  Old Crossroads Nyanga"
+  },
+  {
+    "Address_ID": 253,
+    "Address_Cleaned": "Walter Sisulu & Steve Biko Drive Khayelitsha "
+  },
+  {
+    "Address_ID": 254,
+    "Address_Cleaned": "163 Sunderland Street Factreton"
+  },
+  {
+    "Address_ID": 255,
+    "Address_Cleaned": "NY 1 & NY 2  Guguleth7750"
+  },
+  {
+    "Address_ID": 256,
+    "Address_Cleaned": "Hillstar Complex Bamboesvlei Rd Wetton"
+  },
+  {
+    "Address_ID": 257,
+    "Address_Cleaned": "St Georges Street Simon's Town"
+  },
+  {
+    "Address_ID": 258,
+    "Address_Cleaned": "2nd & 7th Avenue Town Centre Mitchells Plain"
+  },
+  {
+    "Address_ID": 259,
+    "Address_Cleaned": "Off Koeberg Rd Tableview"
+  },
+  {
+    "Address_ID": 260,
+    "Address_Cleaned": "Mendi &Brinton Street Langa"
+  },
+  {
+    "Address_ID": 261,
+    "Address_Cleaned": "6 Pikkewyn Street (off School Street) Morningstar Durbanville"
+  },
+  {
+    "Address_ID": 262,
+    "Address_Cleaned": "Town Hall Main & Church Street Somerset West"
+  },
+  {
+    "Address_ID": 263,
+    "Address_Cleaned": " Dullah Omar Drive Fisantekraal Durbanville"
+  },
+  {
+    "Address_ID": 264,
+    "Address_Cleaned": "Law Enforcement Building153 Main Road Delft"
+  },
+  {
+    "Address_ID": 265,
+    "Address_Cleaned": "Olifant Street Manenberg"
+  },
+  {
+    "Address_ID": 266,
+    "Address_Cleaned": "Washington Street & Mendi Avenue Langa"
+  },
+  {
+    "Address_ID": 267,
+    "Address_Cleaned": "Langa Hall"
+  },
+  {
+    "Address_ID": 268,
+    "Address_Cleaned": "Aloe & Merrydale Rd Lentegeur Mitchells Plain"
+  },
+  {
+    "Address_ID": 269,
+    "Address_Cleaned": "4TH Avenue Sherwood Park Manenberg "
+  },
+  {
+    "Address_ID": 270,
+    "Address_Cleaned": "Silver Sands Ave/Bluegum Grove Way"
+  },
+  {
+    "Address_ID": 271,
+    "Address_Cleaned": "Neil Hare Road Atlantis"
+  },
+  {
+    "Address_ID": 272,
+    "Address_Cleaned": "Freedom Way Joe Slovo Milnerton"
+  },
+  {
+    "Address_ID": 273,
+    "Address_Cleaned": "NY 62 Gugulethu"
+  },
+  {
+    "Address_ID": 274,
+    "Address_Cleaned": "Pandering Street Bonteheuwel"
+  },
+  {
+    "Address_ID": 275,
+    "Address_Cleaned": "Delft & Fort Worth RoadsDelft"
+  },
+  {
+    "Address_ID": 276,
+    "Address_Cleaned": "Faure Marine Drive (R44) Gordons Bay"
+  },
+  {
+    "Address_ID": 277,
+    "Address_Cleaned": "Darling Road Old Mamre"
+  },
+  {
+    "Address_ID": 278,
+    "Address_Cleaned": "Fabriek Street Delft"
+  },
+  {
+    "Address_ID": 279,
+    "Address_Cleaned": "Neil Hare Rd Industrial Area Atlantis"
+  },
+  {
+    "Address_ID": 280,
+    "Address_Cleaned": "Goodwood Fire"
+  },
+  {
+    "Address_ID": 281,
+    "Address_Cleaned": "101 Duncan Road Parow"
+  },
+  {
+    "Address_ID": 282,
+    "Address_Cleaned": "Voorbrug Road Delft"
+  }
+]

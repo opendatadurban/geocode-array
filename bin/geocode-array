@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+"""
+CCT Geocode Project:
+This code reads in a list of addresses in json or csv format, attempts to geocode these addresses with the ArcGIS and Nominatim geocoders,
+compares the results from both geocoders and selects the best. Then it attempts to geocode the addresses with the 
+CCT geocoder and returns the output from the CCT geocoder as well as the best result from the combination of ArcGIS and Nominatim
+in json and csv format.
+"""
+
+import argparse
+import collections
+import logging
+
+from geocode_array import ArcGIS, Nominatim, CCT, Google
+from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY
+
+parser = argparse.ArgumentParser(
+    description="geocode using an array of Geocoders. Example: $ geocode-array  "
+                "--input_filename=sample.csv -output_filetype=csv "
+                "--output_filename=out --key_file=key.json"
+)
+parser.add_argument("--input_filename", type=str, help="input filename eg: sample.csv")
+parser.add_argument("--output_filename", type=str, help="output filename eg: sample_output.csv",
+                    default=STD_OUT)
+parser.add_argument("--proxy_url", type=str, help="Proxy URL eg: http://my_username:my_password@my_proxy/", required=False, default=None)
+parser.add_argument("--key_file", type=str, help="your Google API Key in a json file", default=None)
+parser.add_argument("--verbose", help="Turns on debug logging", action="store_true", default=False)
+args = parser.parse_args()
+
+input_filename = args.input_filename
+output_filename = args.output_filename
+proxy_url = args.proxy_url
+key_filename = args.key_file
+
+# Setting up logging
+log_level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=log_level,
+                    format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
+
+google_api_key = io_utils.get_api_key(key_filename) if key_filename is not None else None
+
+# Setting up geocoders
+geocoders = collections.OrderedDict([
+    (gc.__name__, gc(proxy_url=proxy_url))
+    for gc in (
+        ArcGIS.ArcGIS,
+        Nominatim.Nominatim,
+        CCT.CCT,
+    )
+])
+if google_api_key is not None:
+    geocoders[Google.Google.__name__] = Google.Google(proxy_url=proxy_url, api_key=google_api_key)
+
+logging.info(f"Using the following Geocoders: {', '.join(geocoders.keys())}")
+
+inputs = tuple(io_utils.input_file_entries(input_filename))
+result = {}
+for add_ID, addr in inputs:
+    logging.debug(f"Processing {add_ID}: '{addr}'")
+
+    logging.info("Geocod[ing]...")
+    geocoder_results = geocode_array.threaded_geocode(geocoders.values(), addr)
+    result_tuples = [
+        (geocoder_class, *results)
+        for geocoder_class, results in zip(geocoders.keys(), geocoder_results)
+    ]
+    logging.info("...Geocod[ed]")
+    logging.debug(f"result_tuples={result_tuples}")
+
+    logging.info("Filter[ing]...")
+    result_tuples = [
+        result_tuple
+        for result_tuple in result_tuples
+        if None not in result_tuple[:3]
+    ]
+    logging.info("Filter[ed]")
+
+    if len(result_tuples) > 0:
+        logging.info("Find[ing] best result...")
+        best_result = geocode_array.combine_geocode_results(result_tuples)
+        logging.info(f"...F[ound] best result for '{addr}': '{best_result}'")
+    else:
+        best_result = None
+
+    # Performing double geocoding if there isn't consensus, so we can at least return the single best result
+    if best_result is None and len(result_tuples) > 0:
+        logging.debug("Selecting working geocoders")
+        working_geocoder_names = {geocoder_class for geocoder_class, *_ in result_tuples}
+        double_geocoders = collections.OrderedDict([
+            (geocoder_name, geocoders[geocoder_name])
+            for geocoder_name in working_geocoder_names
+        ])
+        logging.debug(f"double_geocoders={double_geocoders}")
+
+        logging.info("Double Geocod[ing]...")
+        double_geocoder_results = geocode_array.threaded_double_geocode(double_geocoders.values(), addr)
+        result_tuples = [
+            (geocoder_name, *results)
+            for geocoder_name, results in zip(double_geocoders.keys(), double_geocoder_results)
+        ]
+        logging.info("...Double Geocod[ed]")
+
+        logging.info("Find[ing] best result...")
+        best_result = geocode_array.combine_double_geocode_results(result_tuples)
+        logging.info(f"...F[ound] best result for '{addr}': '{best_result}'")
+
+    if best_result is not None:
+        lat, lon, error, geocoders_used = best_result
+
+        result_dict = {
+                "address": addr, "lat": lat, "lon": lon, "error": error,
+                "num_geocoders": len(geocoders_used) if geocoders_used is not None else 0,
+                "geocoders": ";".join(geocoders_used) if geocoders_used is not None else None
+            }
+    else:
+        result_dict = {
+            "address": None, "lat": None, "lon": None, "error": None, "num_geocoders": None, "geocoders": None
+        }
+
+    result[add_ID] = {
+        RESULT_KEY: result_dict
+    }
+
+io_utils.output_data(result, output_filename)
