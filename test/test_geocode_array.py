@@ -69,7 +69,8 @@ class TestGeocodeArray(unittest.TestCase):
         self.assertIsNone(combined_result_3, "When the geocoders disagree, there should be a null result")
 
     def test_combine_double_geocode_results(self):
-        # Testing the happy case - i.e. all Geocoders with error values. Really testing that the plumbing.
+        # Testing the happy case - i.e. all Geocoders with error values. Really testing that the plumbing to
+        # combine_geocode is working
 
         test_result = (*self.mean_pos, self.dist_mean, [gc for gc, *_ in self.result_tuples])
         combined_result = combine_double_geocode_results(self.result_tuples)
@@ -92,11 +93,14 @@ class TestGeocodeArray(unittest.TestCase):
         self.assertTupleEqual(combined_result_2, test_result_2, "Not selecting the single best geocoder")
 
         # Testing the failure case
-        result_tuples_2 = (
+        result_tuples_3 = (
             ("Geocoder 4", "Main & Fagen Rd Strand", -34.2001, 18.2001, 0.001),
             ("Geocoder 6", "Main & Fagen Rd Strand", -34.3001, 18.3001, 0.002),
             ("Geocoder 7", "Main & Fagen Rd Strand", -34.4001, 18.4001, 0.003),
         )
-        combined_result_3 = combine_double_geocode_results(result_tuples_2)
+        combined_result_3 = combine_double_geocode_results(result_tuples_3)
 
         self.assertIsNone(combined_result_3, "Not getting a null result when there is no geocoder below threshold")
+
+if __name__ == '__main__':
+    unittest.main()

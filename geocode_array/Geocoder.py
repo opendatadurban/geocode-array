@@ -66,7 +66,7 @@ def _calc_euclidean_distance(coords_1, coords_2) -> float:
 
     numbers_verified = all(
         map(
-            lambda c: isinstance(c, float),
+            lambda c: isinstance(c, float) or isinstance(c, int),
             (x, y, x2, y2)
         )
     )

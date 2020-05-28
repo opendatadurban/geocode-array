@@ -10,7 +10,7 @@ API_KEY = "api_key"
 
 RESULT_KEY = "result"
 
-REQUEST_HEADER_DICT = {'User-Agent': 'Chrome', "Accept": "*/json"}
+REQUEST_HEADER_DICT = {'User-agent': 'Chrome', "Accept": "*/json"}
 
 DISPERSION_THRESHOLD = 0.001
 
