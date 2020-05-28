@@ -8,9 +8,7 @@ import urllib.request
 from geocode_array import REQUEST_HEADER_DICT, REQUEST_TRIES, REQUEST_DELAY
 
 
-def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
-    logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
-
+def _form_request(request_base_url, request_url_args, proxy_url) -> urllib.request.Request:
     request_string = f"{request_base_url}?{request_url_args}"
     req = urllib.request.Request(
         request_string,
@@ -21,6 +19,14 @@ def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
         auth = urllib.request.HTTPBasicAuthHandler()
         opener = urllib.request.build_opener(proxy, auth, urllib.request.HTTPHandler)
         urllib.request.install_opener(opener)
+
+    return req
+
+
+def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
+    logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
+
+    req = _form_request(request_base_url, request_url_args, proxy_url)
 
     tries = REQUEST_TRIES
     while tries > 0:
@@ -36,7 +42,7 @@ def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
                 return None
             else:
                 delay = REQUEST_DELAY*(REQUEST_TRIES-tries+1)
-                logging.debug(f"Sleeping for '{delay}'")
+                logging.debug(f"Sleeping for '{delay}' - {tries} remaining")
                 time.sleep(delay)
 
     logging.debug(f"Response Code: {resp.getcode()}")
@@ -65,8 +71,6 @@ def _calc_euclidean_distance(coords_1, coords_2) -> float:
         )
     )
     distance = ((x-x2)**2 + (y-y2)**2)**0.5 if numbers_verified else None
-    if distance is not None:
-        logging.debug(f"distance is {distance} in degrees decimal, ~{distance*100} m in Cape Town")
 
     return distance
 
@@ -80,6 +84,8 @@ class Geocoder:
 
     def __init__(self, proxy_url=None, **kwargs):
         self.proxy_url = proxy_url
+        if proxy_url is not None:
+            logging.debug("Proxy set")
 
     def _form_reverse_geocode_request_args(self, *args) -> str:
         raise NotImplementedError
@@ -88,7 +94,9 @@ class Geocoder:
         raise NotImplementedError
 
     def _reverse_geocode(self, *coords) -> str or None:
-        result = _make_request(self.reverse_geocode_url, self._form_reverse_geocode_request_args(*coords), proxy_url=self.proxy_url)
+        result = _make_request(self.reverse_geocode_url,
+                               self._form_reverse_geocode_request_args(*coords),
+                               proxy_url=self.proxy_url)
 
         if result is None:
             return None
@@ -104,7 +112,9 @@ class Geocoder:
         raise NotImplementedError
 
     def _geocode(self, *address) -> (float, float) or None:
-        result = _make_request(self.geocode_url, self._form_geocode_request_args(*address), proxy_url=self.proxy_url)
+        result = _make_request(self.geocode_url,
+                               self._form_geocode_request_args(*address),
+                               proxy_url=self.proxy_url)
 
         if result is None:
             return None
@@ -170,6 +180,9 @@ class Geocoder:
         logging.debug(f"Calculat[ing] error")
         distance = _calc_euclidean_distance(initial_coords, verification_coords)
         logging.debug(f"Calculat[ed] error")
+
+        if distance is not None:
+            logging.debug(f"distance is {distance} in degrees decimal, ~{distance * 100} m in Cape Town")
 
         # hey, it actually worked
         lat, lon = initial_coords
