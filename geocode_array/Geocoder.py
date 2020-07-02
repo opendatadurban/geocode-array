@@ -33,7 +33,7 @@ def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
         try:
             resp = urllib.request.urlopen(req)
             tries = 0
-        except urllib.error.URLError as e:
+        except Exception as e:
             logging.warning(f"URL request failed with {e.__class__}: '{e}'")
 
             tries -= 1
