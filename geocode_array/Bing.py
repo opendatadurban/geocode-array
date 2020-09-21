@@ -10,7 +10,6 @@ from geocode_array import REQUEST_HEADER_DICT, REQUEST_TRIES, REQUEST_DELAY
 
 def _form_rev_bing_request(request_base_url, request_url_args, proxy_url) -> urllib.request.Request:
         request_string = f"{request_base_url}{request_url_args}"
-        print(request_string)
         req = urllib.request.Request(
             request_string,
             headers={**REQUEST_HEADER_DICT}
@@ -27,7 +26,6 @@ def _make_bing_rev_request(request_base_url, request_url_args, proxy_url) -> str
     logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
 
     req = _form_rev_bing_request(request_base_url, request_url_args, proxy_url)
-    print("\n", req.full_url, "\n")
     tries = REQUEST_TRIES
     while tries > 0:
         try:
@@ -74,7 +72,7 @@ class Bing(Geocoder):
 
         if result is None:
             return None
-        print(result)
+
         address = self._get_address_from_reverse_geocode(result)
 
         return address
