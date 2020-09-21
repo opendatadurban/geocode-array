@@ -6,7 +6,9 @@ STD_OUT = "/dev/stdout"
 ADDRESS_ID_FIELD = "Address_ID"
 ADDRESS_FIELD = "Address_Cleaned"
 
-API_KEY = "api_key"
+GOOGLE_API_KEY = "google_api_key"
+BING_API_KEY = "bing_api_key"
+W3W_API_KEY = "w3w_api_key"
 
 RESULT_KEY = "result"
 

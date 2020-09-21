@@ -13,7 +13,7 @@ import logging
 import os
 import pprint
 
-from geocode_array import JSON_EXT, CSV_EXT, STD_OUT, ADDRESS_ID_FIELD, ADDRESS_FIELD, RESULT_KEY, API_KEY
+from geocode_array import JSON_EXT, CSV_EXT, STD_OUT, ADDRESS_ID_FIELD, ADDRESS_FIELD, RESULT_KEY, GOOGLE_API_KEY, BING_API_KEY, W3W_API_KEY 
 
 DATA_READER_DICT = {
     JSON_EXT: lambda input_file: iter(json.load(input_file)),
@@ -127,8 +127,8 @@ def output_data(data, output_filename):
         data_writer_func(data_file, data)
 
 
-def get_api_key(key_filename):
+def get_api_key(key_filename, api_key):
     with open(key_filename, "r") as key_file:
         key_data = json.load(key_file)
 
-    return key_data[API_KEY]
+    return key_data[api_key]
