@@ -1,5 +1,6 @@
 import logging
 import pprint
+import re
 import urllib.parse
 
 from geocode_array.Geocoder import Geocoder
@@ -34,6 +35,8 @@ class what3words(Geocoder):
         return address
 
     def _form_geocode_request_args(self, the_three_words) -> str:
+        if not re.match("^\w+\.\w+\.\w+$" , the_three_words):
+            raise ValueError("what3 words expects three '.' separated words")
         values = {
             "words": f'{the_three_words}',
             "key": self.api_key
