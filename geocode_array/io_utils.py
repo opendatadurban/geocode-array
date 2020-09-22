@@ -131,4 +131,7 @@ def get_api_key(key_filename, api_key):
     with open(key_filename, "r") as key_file:
         key_data = json.load(key_file)
 
+    if api_key not in key_data.keys():
+        raise KeyError(f"API key name: {api_key} not found in {key_filename} keys: {key_data.keys()}")
+
     return key_data[api_key]
