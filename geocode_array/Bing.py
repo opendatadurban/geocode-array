@@ -8,55 +8,6 @@ from geocode_array.Geocoder import Geocoder, _make_request
 from geocode_array import REQUEST_HEADER_DICT, REQUEST_TRIES, REQUEST_DELAY
 
 
-def _form_rev_bing_request(request_base_url, request_url_args, proxy_url) -> urllib.request.Request:
-        request_string = f"{request_base_url}{request_url_args}"
-        req = urllib.request.Request(
-            request_string,
-            headers={**REQUEST_HEADER_DICT}
-        )
-        if proxy_url is not None:
-            proxy = urllib.request.ProxyHandler({'http': proxy_url, 'https': proxy_url})
-            auth = urllib.request.HTTPBasicAuthHandler()
-            opener = urllib.request.build_opener(proxy, auth, urllib.request.HTTPHandler)
-            urllib.request.install_opener(opener)
-
-        return req
-
-def _make_bing_rev_request(request_base_url, request_url_args, proxy_url) -> str or None:
-    logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
-
-    req = _form_rev_bing_request(request_base_url, request_url_args, proxy_url)
-    tries = REQUEST_TRIES
-    while tries > 0:
-        try:
-            resp = urllib.request.urlopen(req)
-            tries = 0
-        except Exception as e:
-            logging.warning(f"URL request failed with {e.__class__}: '{e}'")
-
-            tries -= 1
-            if tries == 0:
-                logging.error("Tries exceeded - giving up")
-                return None
-            else:
-                delay = REQUEST_DELAY*(REQUEST_TRIES-tries+1)
-                logging.debug(f"Sleeping for '{delay}' - {tries} remaining")
-                time.sleep(delay)
-
-    logging.debug(f"Response Code: {resp.getcode()}")
-    code = resp.getcode()
-    
-    if code == 200:
-        resp_raw = resp.read()
-        # logging.debug(f"Raw Result: \n{pprint.pformat(resp_raw)}")
-        result = json.loads(resp_raw.decode('utf-8'))
-        # logging.debug(f"Result: \n{pprint.pformat(result)}")
-    else:
-        logging.debug(f'Got incorrect code: {code}')
-        result = None
-
-    return result
-
 class Bing(Geocoder):
     reverse_geocode_url = "http://dev.virtualearth.net/REST/v1/Locations/" 
     geocode_url = "http://dev.virtualearth.net/REST/v1/Locations" 
