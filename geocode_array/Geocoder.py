@@ -8,8 +8,11 @@ import urllib.request
 from geocode_array import REQUEST_HEADER_DICT, REQUEST_TRIES, REQUEST_DELAY
 
 
-def _form_request(request_base_url, request_url_args, proxy_url) -> urllib.request.Request:
-    request_string = f"{request_base_url}?{request_url_args}"
+def _form_request(request_base_url, request_url_args, proxy_url, bing_reverse=False) -> urllib.request.Request:
+    if bing_reverse:
+        request_string = f"{request_base_url}{request_url_args}"
+    else:    
+        request_string = f"{request_base_url}?{request_url_args}"
     req = urllib.request.Request(
         request_string,
         headers={**REQUEST_HEADER_DICT}
@@ -23,10 +26,10 @@ def _form_request(request_base_url, request_url_args, proxy_url) -> urllib.reque
     return req
 
 
-def _make_request(request_base_url, request_url_args, proxy_url) -> str or None:
+def _make_request(request_base_url, request_url_args, proxy_url, bing_reverse=False) -> str or None:
     logging.debug(f"Request Args: {request_url_args.encode('utf-8')}")
 
-    req = _form_request(request_base_url, request_url_args, proxy_url)
+    req = _form_request(request_base_url, request_url_args, proxy_url, bing_reverse)
 
     tries = REQUEST_TRIES
     while tries > 0:
@@ -93,10 +96,11 @@ class Geocoder:
     def _get_address_from_reverse_geocode(self, response) -> str or None:
         raise NotImplementedError
 
-    def _reverse_geocode(self, *coords) -> str or None:
+    def _reverse_geocode(self, *coords, bing_reverse=False) -> str or None:
         result = _make_request(self.reverse_geocode_url,
                                self._form_reverse_geocode_request_args(*coords),
-                               proxy_url=self.proxy_url)
+                               proxy_url=self.proxy_url,
+                               bing_reverse=bing_reverse)
 
         if result is None:
             return None
