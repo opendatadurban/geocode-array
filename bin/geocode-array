@@ -13,8 +13,8 @@ import argparse
 import collections
 import logging
 
-from geocode_array import ArcGIS, Nominatim, CCT, Google
-from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY
+from geocode_array import ArcGIS, Nominatim, CCT, Google, Bing
+from geocode_array import geocode_array, io_utils, STD_OUT, RESULT_KEY, GOOGLE_API_KEY, BING_API_KEY
 
 parser = argparse.ArgumentParser(
     description="geocode using an array of Geocoders. Example: $ geocode-array  "
@@ -25,7 +25,7 @@ parser.add_argument("--input_filename", type=str, help="input filename eg: sampl
 parser.add_argument("--output_filename", type=str, help="output filename eg: sample_output.csv",
                     default=STD_OUT)
 parser.add_argument("--proxy_url", type=str, help="Proxy URL eg: http://my_username:my_password@my_proxy/", required=False, default=None)
-parser.add_argument("--key_file", type=str, help="your Google API Key in a json file", default=None)
+parser.add_argument("--key_file", type=str, help="your API Keys in a json file", default=None)
 parser.add_argument("--verbose", help="Turns on debug logging", action="store_true", default=False)
 args = parser.parse_args()
 
@@ -39,7 +39,8 @@ log_level = logging.DEBUG if args.verbose else logging.INFO
 logging.basicConfig(level=log_level,
                     format='%(asctime)s-%(module)s.%(funcName)s [%(levelname)s]: %(message)s')
 
-google_api_key = io_utils.get_api_key(key_filename) if key_filename is not None else None
+google_api_key = io_utils.get_api_key(key_filename, GOOGLE_API_KEY) if key_filename is not None else None
+bing_api_key = io_utils.get_api_key(key_filename, BING_API_KEY) if key_filename is not None else None
 
 # Setting up geocoders
 geocoders = collections.OrderedDict([
@@ -52,6 +53,8 @@ geocoders = collections.OrderedDict([
 ])
 if google_api_key is not None:
     geocoders[Google.Google.__name__] = Google.Google(proxy_url=proxy_url, api_key=google_api_key)
+if bing_api_key is not None:
+    geocoders[Bing.Bing.__name__] = Bing.Bing(proxy_url=proxy_url, api_key=bing_api_key)
 
 logging.info(f"Using the following Geocoders: {', '.join(geocoders.keys())}")
 
