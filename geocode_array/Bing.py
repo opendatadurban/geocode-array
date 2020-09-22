@@ -21,7 +21,7 @@ class Bing(Geocoder):
         result = _make_request(self.reverse_geocode_url,
                                self._form_reverse_geocode_request_args(*coords),
                                proxy_url=self.proxy_url,
-                               bing_reverse=True)
+                               path_parameters=True)
 
         if result is None:
             return None
