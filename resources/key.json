@@ -1,1 +1,5 @@
-{"api_key": "<insert google api key here>"}
+{
+    "google_api_key": "<insert google api key here>",
+    "bing_api_key": "<insert bing api key here>",
+    "w3w_api_key": "<insert what3words api key here>"
+}
